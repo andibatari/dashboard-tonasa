@@ -8,6 +8,11 @@ use App\Http\Controllers\AccountController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\Busdev\InnovationController;
 use App\Http\Controllers\Busdev\SystemDevelopmentController;
+use App\Http\Controllers\Stmc\JadwalMcuController;
+use App\Http\Controllers\Stmc\KaryawanController;
+use App\Http\Controllers\Stmc\KeluargaController;
+use App\Http\Controllers\Stmc\McuPdfController;
+use App\Http\Controllers\Stmc\ValidationController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -115,5 +120,56 @@ Route::middleware(['auth', 'role:Developer|Super Admin|Admin'])->group(function 
     Route::post('/pengaturan', [SettingController::class, 'update'])->name('settings.update');
     Route::put('/pengaturan/templates', [SettingController::class, 'updateTemplates'])->name('settings.update-templates');
 });
+
+// ==========================================
+// RUTE LAYANAN KESEHATAN / STMC (Single Guard: web dengan Spatie Role)
+// ==========================================
+Route::middleware(['auth', 'role:Developer|Super Admin|Admin|Admin STMC|Dokter STMC'])->prefix('stmc')->name('stmc.')->group(function () {
+
+    // Manajemen Jadwal MCU
+    Route::resource('jadwal', JadwalMcuController::class);
+    Route::post('/jadwal/{jadwal}/update-status', [JadwalMcuController::class, 'updateStatus'])->name('jadwal.update-status');
+    Route::get('/jadwal/{jadwal}/detail', \App\Livewire\QrPatientDetail::class)->name('qr-patient-detail');
+    Route::get('/jadwal-dokter', \App\Livewire\Admin\JadwalDokterManager::class)->name('jadwal-dokter');
+    Route::get('/scan-qr', \App\Livewire\QrScanner::class)->name('scan.qr');
+    Route::get('/kelola-paket-poli', \App\Livewire\PaketPoli::class)->name('paket-poli');
+
+    // Manajemen Karyawan & Pasien
+    Route::get('/karyawan/download', [KaryawanController::class, 'downloadExcel'])->name('karyawan.download');
+    Route::post('/karyawan/import', [KaryawanController::class, 'importExcel'])->name('karyawan.import');
+    Route::get('/peserta-mcu/download', [KaryawanController::class, 'pesertaMcuExcel'])->name('peserta.mcu.download');
+    Route::post('/peserta-mcu/import', [KaryawanController::class, 'pesertaMcuImport'])->name('peserta-mcu.import');
+    Route::resource('karyawan', KaryawanController::class);
+    Route::get('/karyawan/{karyawan_id}/add-keluarga', [KaryawanController::class, 'addKeluarga'])->name('karyawan.add.keluarga');
+    Route::post('/karyawan/{karyawan_id}/store-keluarga', [KaryawanController::class, 'storeKeluarga'])->name('karyawan.store.keluarga');
+    Route::get('/karyawan/{karyawan_id}/keluarga/{tipe}', [KaryawanController::class, 'showKeluarga'])->name('data.keluarga.show');
+    Route::get('/keluarga/{pesertaMcu}', [KeluargaController::class, 'show'])->name('pasien.show');
+    Route::get('/keluarga/{keluarga}/edit', [KeluargaController::class, 'edit'])->name('keluarga.edit');
+    Route::delete('/keluarga/{keluarga}', [KeluargaController::class, 'destroy'])->name('keluarga.destroy');
+    Route::get('/add-pasien-non-karyawan', [KaryawanController::class, 'addKeluarga'])->name('pasien.add.nonkaryawan');
+    Route::post('/store-pasien-non-karyawan', [KaryawanController::class, 'storeKeluarga'])->name('pasien.store.nonkaryawan');
+
+    // Laporan & Hasil Pemeriksaan (PDF & Export)
+    Route::get('/laporan-pemeriksaan', \App\Livewire\Admin\ExportPemeriksaan::class)->name('laporan.pemeriksaan');
+    Route::get('/download-mcu-summary/{jadwalId}', [McuPdfController::class, 'downloadMcuSummary'])->name('download.mcu.summary');
+    Route::get('/download/mcu-resume/{jadwalId}', [McuPdfController::class, 'downloadResume'])->name('download.resume.pdf');
+    Route::get('/pdf/view-summary/{id}', [McuPdfController::class, 'viewPdf'])->name('pdf.view');
+    Route::get('/pdf/gigi/{id}', [McuPdfController::class, 'viewPdfGigi'])->name('pdf.view.gigi');
+    Route::get('/pdf/kebugaran/{id}', [McuPdfController::class, 'viewPdfKebugaran'])->name('pdf.kebugaran.view');
+    Route::get('/pdf/fisik/{id}', [McuPdfController::class, 'viewPdfFisik'])->name('pdf.fisik.view');
+
+    // Pemantauan Lingkungan
+    Route::prefix('lingkungan')->name('lingkungan.')->group(function () {
+        Route::get('/pemantauan', \App\Livewire\PemantauanLingkunganIndex::class)->name('index');
+        Route::get('/pemantauan/tambah', \App\Livewire\PemantauanLingkunganForm::class)->name('create');
+    });
+
+    // Notifikasi
+    Route::get('/notifications/dashboard', \App\Livewire\NotificationDashboard::class)->name('notifications.dashboard');
+    Route::get('/notifications/history', \App\Livewire\NotificationHistory::class)->name('notifications.history');
+});
+
+// Rute Publik Validasi Keaslian PDF via Scan QR Code
+Route::get('/validasi-dokumen/{uuid}', [ValidationController::class, 'verifyPdf'])->name('validasi.pdf');
 
 require __DIR__.'/auth.php';

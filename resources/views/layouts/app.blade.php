@@ -12,6 +12,7 @@
     <link href="https://fonts.bunny.net/css?family=plus-jakarta-sans:400,500,600,700,800|inter:400,500,600,700&display=swap" rel="stylesheet" />
     
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @livewireStyles
     
     <!-- Skrip untuk Mencegah Layar Berkedip Putih saat Dark Mode -->
     <script>
@@ -103,9 +104,14 @@
             @endisset
 
             <main class="p-3 sm:p-5 md:p-6 w-full flex-1">
-                {{ $slot }}
+                @if (isset($slot))
+                    {{ $slot }}
+                @else
+                    @yield('content')
+                @endif
             </main>
         </div>
     </div>
+    @livewireScripts
 </body>
 </html>
