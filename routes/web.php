@@ -124,13 +124,15 @@ Route::middleware(['auth', 'role:Developer|Super Admin|Admin'])->group(function 
 // ==========================================
 // RUTE LAYANAN KESEHATAN / STMC (Single Guard: web dengan Spatie Role)
 // ==========================================
-Route::middleware(['auth', 'role:Developer|Super Admin|Admin|Admin STMC|Dokter STMC'])->prefix('stmc')->name('stmc.')->group(function () {
+Route::middleware(['auth', 'role:Developer|Super Admin|Admin|Admin STMC|Dokter STMC'])->prefix('stmc')->group(function () {
 
     // Manajemen Jadwal MCU
     Route::resource('jadwal', JadwalMcuController::class);
+    Route::get('/jadwal-mcu/create', [JadwalMcuController::class, 'create'])->name('jadwal-mcu.create');
     Route::post('/jadwal/{jadwal}/update-status', [JadwalMcuController::class, 'updateStatus'])->name('jadwal.update-status');
     Route::get('/jadwal/{jadwal}/detail', \App\Livewire\QrPatientDetail::class)->name('qr-patient-detail');
-    Route::get('/jadwal-dokter', \App\Livewire\Admin\JadwalDokterManager::class)->name('jadwal-dokter');
+    Route::get('/jadwal-dokter', \App\Livewire\Admin\JadwalDokterManager::class)->name('admin.jadwal-dokter');
+    Route::get('/get-jadwal-dokter', [\App\Http\Controllers\Api\JadwalDokterApiController::class, 'getEvents'])->name('api.jadwal-dokter');
     Route::get('/scan-qr', \App\Livewire\QrScanner::class)->name('scan.qr');
     Route::get('/kelola-paket-poli', \App\Livewire\PaketPoli::class)->name('paket-poli');
 
@@ -150,7 +152,7 @@ Route::middleware(['auth', 'role:Developer|Super Admin|Admin|Admin STMC|Dokter S
     Route::post('/store-pasien-non-karyawan', [KaryawanController::class, 'storeKeluarga'])->name('pasien.store.nonkaryawan');
 
     // Laporan & Hasil Pemeriksaan (PDF & Export)
-    Route::get('/laporan-pemeriksaan', \App\Livewire\Admin\ExportPemeriksaan::class)->name('laporan.pemeriksaan');
+    Route::get('/laporan-pemeriksaan', \App\Livewire\Admin\ExportPemeriksaan::class)->name('admin.laporan.pemeriksaan');
     Route::get('/download-mcu-summary/{jadwalId}', [McuPdfController::class, 'downloadMcuSummary'])->name('download.mcu.summary');
     Route::get('/download/mcu-resume/{jadwalId}', [McuPdfController::class, 'downloadResume'])->name('download.resume.pdf');
     Route::get('/pdf/view-summary/{id}', [McuPdfController::class, 'viewPdf'])->name('pdf.view');
@@ -159,9 +161,9 @@ Route::middleware(['auth', 'role:Developer|Super Admin|Admin|Admin STMC|Dokter S
     Route::get('/pdf/fisik/{id}', [McuPdfController::class, 'viewPdfFisik'])->name('pdf.fisik.view');
 
     // Pemantauan Lingkungan
-    Route::prefix('lingkungan')->name('lingkungan.')->group(function () {
-        Route::get('/pemantauan', \App\Livewire\PemantauanLingkunganIndex::class)->name('index');
-        Route::get('/pemantauan/tambah', \App\Livewire\PemantauanLingkunganForm::class)->name('create');
+    Route::prefix('lingkungan')->group(function () {
+        Route::get('/pemantauan', \App\Livewire\PemantauanLingkunganIndex::class)->name('pemantauan.index');
+        Route::get('/pemantauan/tambah', \App\Livewire\PemantauanLingkunganForm::class)->name('pemantauan.create');
     });
 
     // Notifikasi
