@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Setting extends Model
 {
-    protected $fillable = ['key', 'value', 'description'];
+    protected $fillable = ['key', 'value', 'description', 'type', 'label'];
 
     public static function getDirectors(): array
     {
