@@ -62,44 +62,16 @@
         <!-- ========================================== -->
         <!-- MENU KHUSUS INTERNAL HC & GRC (Developer/Admin) -->
         <!-- ========================================== -->
-        @hasanyrole('Developer|Super Admin|Admin')
+        <!-- ========================================== -->
+        <!-- MENU KHUSUS INTERNAL (Business & Health Services) -->
+        <!-- ========================================== -->
+        @hasanyrole('Developer|Super Admin|Admin|Admin STMC|Dokter STMC')
             <div class="pt-5 pb-2 px-3">
-                <span x-show="sidebarOpen || window.innerWidth < 1024" class="text-[10px] font-bold tracking-widest text-[#F5333F] uppercase">Dept. HC & GRC</span>
+                <span x-show="sidebarOpen || window.innerWidth < 1024" class="text-[10px] font-bold tracking-widest text-[#F5333F] uppercase">Dept. HC & Services</span>
             </div>
 
-            <!-- 1. HC Planning & Development -->
-            <div x-data="{ openHCPD: false }">
-                <button @click="openHCPD = !openHCPD; if(!sidebarOpen && window.innerWidth >= 1024) sidebarOpen = true" class="flex items-center justify-between w-full px-3 py-2.5 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-800/40 group transition-all duration-200 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white focus:outline-none">
-                    <div class="flex items-center">
-                        <svg class="w-5 h-5 text-gray-400 dark:text-gray-500 group-hover:text-gray-900 dark:group-hover:text-white transition-colors" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z"></path></svg>
-                        <span x-show="sidebarOpen || window.innerWidth < 1024" class="ml-3 text-[13.5px] font-medium whitespace-nowrap">HC Planning & Dev</span>
-                    </div>
-                    <svg x-show="sidebarOpen || window.innerWidth < 1024" :class="{'rotate-180': openHCPD}" class="w-4 h-4 text-gray-400 transition-transform duration-200" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path></svg>
-                </button>
-                <div x-show="openHCPD && (sidebarOpen || window.innerWidth < 1024)" x-transition.opacity class="mt-1 ml-5 pl-4 border-l-2 border-gray-100 dark:border-gray-800 space-y-1">
-                    <a href="#" class="block px-3 py-2 text-[12.5px] font-medium text-gray-500 dark:text-gray-400 hover:text-gray-900 hover:bg-gray-50 dark:hover:text-white dark:hover:bg-gray-800/40 rounded-lg transition-colors">OD & Career Mgt.</a>
-                    <a href="#" class="block px-3 py-2 text-[12.5px] font-medium text-gray-500 dark:text-gray-400 hover:text-gray-900 hover:bg-gray-50 dark:hover:text-white dark:hover:bg-gray-800/40 rounded-lg transition-colors">Performance & Talent</a>
-                    <a href="#" class="block px-3 py-2 text-[12.5px] font-medium text-gray-500 dark:text-gray-400 hover:text-gray-900 hover:bg-gray-50 dark:hover:text-white dark:hover:bg-gray-800/40 rounded-lg transition-colors">Learning & Development</a>
-                </div>
-            </div>
-
-            <!-- 2. HC Operational -->
-            <div x-data="{ openHCO: false }">
-                <button @click="openHCO = !openHCO; if(!sidebarOpen && window.innerWidth >= 1024) sidebarOpen = true" class="flex items-center justify-between w-full px-3 py-2.5 mt-1 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-800/40 group transition-all duration-200 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white focus:outline-none">
-                    <div class="flex items-center">
-                        <svg class="w-5 h-5 text-gray-400 dark:text-gray-500 group-hover:text-gray-900 dark:group-hover:text-white transition-colors" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z"></path></svg>
-                        <span x-show="sidebarOpen || window.innerWidth < 1024" class="ml-3 text-[13.5px] font-medium whitespace-nowrap">HC Operational</span>
-                    </div>
-                    <svg x-show="sidebarOpen || window.innerWidth < 1024" :class="{'rotate-180': openHCO}" class="w-4 h-4 text-gray-400 transition-transform duration-200" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path></svg>
-                </button>
-                <div x-show="openHCO && (sidebarOpen || window.innerWidth < 1024)" x-transition.opacity class="mt-1 ml-5 pl-4 border-l-2 border-gray-100 dark:border-gray-800 space-y-1">
-                    <a href="#" class="block px-3 py-2 text-[12.5px] font-medium text-gray-500 dark:text-gray-400 hover:text-gray-900 hover:bg-gray-50 dark:hover:text-white dark:hover:bg-gray-800/40 rounded-lg transition-colors">PA & CompBen</a>
-                    <a href="#" class="block px-3 py-2 text-[12.5px] font-medium text-gray-500 dark:text-gray-400 hover:text-gray-900 hover:bg-gray-50 dark:hover:text-white dark:hover:bg-gray-800/40 rounded-lg transition-colors">Employee Facility</a>
-                    <a href="#" class="block px-3 py-2 text-[12.5px] font-medium text-gray-500 dark:text-gray-400 hover:text-gray-900 hover:bg-gray-50 dark:hover:text-white dark:hover:bg-gray-800/40 rounded-lg transition-colors">HC Partner & Culture</a>
-                </div>
-            </div>
-
-            <!-- 3. Business & System Development -->
+            <!-- 1. Business & System Development -->
+            @hasanyrole('Developer|Super Admin|Admin')
             <div x-data="{ openBusdev: {{ request()->routeIs('busdev.*') ? 'true' : 'false' }} }">
                 <button @click="openBusdev = !openBusdev; if(!sidebarOpen && window.innerWidth >= 1024) sidebarOpen = true" class="flex items-center justify-between w-full px-3 py-2.5 mt-1 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-800/40 group transition-all duration-200 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white focus:outline-none">
                     <div class="flex items-center">
@@ -120,58 +92,20 @@
                     </a>
                 </div>
             </div>
+            @endhasanyrole
 
-            <!-- 4. GRC Management -->
-            <div x-data="{ openGrc: false }">
-                <button @click="openGrc = !openGrc; if(!sidebarOpen && window.innerWidth >= 1024) sidebarOpen = true" class="flex items-center justify-between w-full px-3 py-2.5 mt-1 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-800/40 group transition-all duration-200 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white focus:outline-none">
-                    <div class="flex items-center">
-                        <svg class="w-5 h-5 text-gray-400 dark:text-gray-500 group-hover:text-gray-900 dark:group-hover:text-white transition-colors" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z"></path></svg>
-                        <span x-show="sidebarOpen || window.innerWidth < 1024" class="ml-3 text-[13.5px] font-medium whitespace-nowrap">GRC Management</span>
-                    </div>
-                    <svg x-show="sidebarOpen || window.innerWidth < 1024" :class="{'rotate-180': openGrc}" class="w-4 h-4 text-gray-400 transition-transform duration-200" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path></svg>
-                </button>
-                <div x-show="openGrc && (sidebarOpen || window.innerWidth < 1024)" x-transition.opacity class="mt-1 ml-5 pl-4 border-l-2 border-gray-100 dark:border-gray-800 space-y-1">
-                    <a href="#" class="block px-3 py-2 text-[12.5px] font-medium text-gray-500 dark:text-gray-400 hover:text-gray-900 hover:bg-gray-50 dark:hover:text-white dark:hover:bg-gray-800/40 rounded-lg transition-colors">Risk Mgt & BCM</a>
-                    <a href="#" class="block px-3 py-2 text-[12.5px] font-medium text-gray-500 dark:text-gray-400 hover:text-gray-900 hover:bg-gray-50 dark:hover:text-white dark:hover:bg-gray-800/40 rounded-lg transition-colors">Gov, Compliance & ESG</a>
-                </div>
-            </div>
-
-            <!-- 5. Health Service & Industrial Hygiene -->
-            <div x-data="{ openHealth: false }">
-                <button @click="openHealth = !openHealth; if(!sidebarOpen && window.innerWidth >= 1024) sidebarOpen = true" class="flex items-center justify-between w-full px-3 py-2.5 mt-1 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-800/40 group transition-all duration-200 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white focus:outline-none">
-                    <div class="flex items-center">
-                        <svg class="w-5 h-5 text-gray-400 dark:text-gray-500 group-hover:text-gray-900 dark:group-hover:text-white transition-colors" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z"></path></svg>
-                        <span x-show="sidebarOpen || window.innerWidth < 1024" class="ml-3 text-[13.5px] font-medium whitespace-nowrap">Health Service & Ind.</span>
-                    </div>
-                    <svg x-show="sidebarOpen || window.innerWidth < 1024" :class="{'rotate-180': openHealth}" class="w-4 h-4 text-gray-400 transition-transform duration-200" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path></svg>
-                </button>
-                <div x-show="openHealth && (sidebarOpen || window.innerWidth < 1024)" x-transition.opacity class="mt-1 ml-5 pl-4 border-l-2 border-gray-100 dark:border-gray-800 space-y-1">
-                    <a href="#" class="block px-3 py-2 text-[12.5px] font-medium text-gray-500 dark:text-gray-400 hover:text-gray-900 hover:bg-gray-50 dark:hover:text-white dark:hover:bg-gray-800/40 rounded-lg transition-colors">Med. Support & Hygiene</a>
-                    <a href="#" class="block px-3 py-2 text-[12.5px] font-medium text-gray-500 dark:text-gray-400 hover:text-gray-900 hover:bg-gray-50 dark:hover:text-white dark:hover:bg-gray-800/40 rounded-lg transition-colors">Services & Nursing</a>
-                </div>
-            </div>
-        @endhasanyrole
-
-        <!-- ========================================== -->
-        <!-- MENU LAYANAN KESEHATAN / STMC (Role: Admin STMC, Dokter STMC, Super Admin, Developer) -->
-        <!-- ========================================== -->
-        @hasanyrole('Developer|Super Admin|Admin|Admin STMC|Dokter STMC')
-            <div class="pt-5 pb-2 px-3">
-                <span x-show="sidebarOpen || window.innerWidth < 1024" class="text-[10px] font-bold tracking-widest text-[#F5333F] uppercase">Layanan Kesehatan (STMC)</span>
-            </div>
-
-            <!-- Dropdown Menu STMC -->
+            <!-- 2. Health Service & STMC -->
             <div x-data="{ openSTMC: {{ request()->routeIs('jadwal.*', 'karyawan.*', 'scan.qr', 'admin.laporan.*', 'pemantauan.*', 'paket-poli') ? 'true' : 'false' }} }">
-                <button @click="openSTMC = !openSTMC; if(!sidebarOpen && window.innerWidth >= 1024) sidebarOpen = true" class="flex items-center justify-between w-full px-3 py-2.5 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-800/40 group transition-all duration-200 {{ request()->routeIs('jadwal.*', 'karyawan.*', 'scan.qr', 'admin.laporan.*', 'pemantauan.*', 'paket-poli') ? 'text-[#F5333F] font-semibold bg-red-50/50 dark:bg-[#F5333F]/10' : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white' }} focus:outline-none">
+                <button @click="openSTMC = !openSTMC; if(!sidebarOpen && window.innerWidth >= 1024) sidebarOpen = true" class="flex items-center justify-between w-full px-3 py-2.5 mt-1 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-800/40 group transition-all duration-200 {{ request()->routeIs('jadwal.*', 'karyawan.*', 'scan.qr', 'admin.laporan.*', 'pemantauan.*', 'paket-poli') ? 'text-[#F5333F] font-semibold bg-red-50/50 dark:bg-[#F5333F]/10' : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white' }} focus:outline-none">
                     <div class="flex items-center">
                         <svg class="w-5 h-5 {{ request()->routeIs('jadwal.*', 'karyawan.*', 'scan.qr', 'admin.laporan.*', 'pemantauan.*', 'paket-poli') ? 'text-[#F5333F]' : 'text-gray-400 dark:text-gray-500 group-hover:text-gray-900 dark:group-hover:text-white transition-colors' }}" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
                         </svg>
-                        <span x-show="sidebarOpen || window.innerWidth < 1024" class="ml-3 text-[13.5px] font-medium whitespace-nowrap">Klinik & MCU</span>
+                        <span x-show="sidebarOpen || window.innerWidth < 1024" class="ml-3 text-[13.5px] font-medium whitespace-nowrap">Health Service (STMC)</span>
                     </div>
-                    <svg x-show="sidebarOpen || window.innerWidth < 1024" :class="{'rotate-180': openSTMC}" class="w-3.5 h-3.5 text-gray-400 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    <svg x-show="sidebarOpen || window.innerWidth < 1024" :class="{'rotate-180': openSTMC}" class="w-4 h-4 text-gray-400 transition-transform duration-200" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path></svg>
                 </button>
-                <div x-show="openSTMC && (sidebarOpen || window.innerWidth < 1024)" x-transition class="pl-9 pr-2 py-1 space-y-1">
+                <div x-show="openSTMC && (sidebarOpen || window.innerWidth < 1024)" x-transition.opacity class="mt-1 ml-5 pl-4 border-l-2 border-gray-100 dark:border-gray-800 space-y-1">
                     <a href="{{ route('jadwal.index') }}" class="block px-3 py-2 text-[12.5px] font-medium {{ request()->routeIs('jadwal.*') ? 'text-[#F5333F] font-bold' : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white' }} hover:bg-gray-50 dark:hover:bg-gray-800/40 rounded-lg transition-colors">📅 Jadwal MCU</a>
                     <a href="{{ route('karyawan.index') }}" class="block px-3 py-2 text-[12.5px] font-medium {{ request()->routeIs('karyawan.*') ? 'text-[#F5333F] font-bold' : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white' }} hover:bg-gray-50 dark:hover:bg-gray-800/40 rounded-lg transition-colors">👥 Data Karyawan & Pasien</a>
                     <a href="{{ route('scan.qr') }}" class="block px-3 py-2 text-[12.5px] font-medium {{ request()->routeIs('scan.qr') ? 'text-[#F5333F] font-bold' : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white' }} hover:bg-gray-50 dark:hover:bg-gray-800/40 rounded-lg transition-colors">📷 Scan Kehadiran QR</a>
