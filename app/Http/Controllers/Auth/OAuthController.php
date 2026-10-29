@@ -30,6 +30,17 @@ class OAuthController extends Controller
 
         $driver = $provider === 'microsoft' ? 'azure' : $provider;
 
+        $clientId = config("services.{$driver}.client_id");
+        $clientSecret = config("services.{$driver}.client_secret");
+
+        if (empty($clientId) || empty($clientSecret)) {
+            $providerName = $provider === 'microsoft' ? 'Microsoft SIG (Azure AD)' : 'Google Workspace';
+            $envKey = $provider === 'microsoft' ? 'AZURE_CLIENT_ID & AZURE_CLIENT_SECRET' : 'GOOGLE_CLIENT_ID & GOOGLE_CLIENT_SECRET';
+            return redirect()->route('login')->withErrors([
+                'oauth' => "Kredensial {$providerName} belum diisi di file .env ({$envKey}). Silakan masukkan Client ID dan Secret terlebih dahulu."
+            ]);
+        }
+
         try {
             return Socialite::driver($driver)->redirect();
         } catch (\Throwable $e) {
@@ -119,3 +130,4 @@ class OAuthController extends Controller
         );
     }
 }
+
