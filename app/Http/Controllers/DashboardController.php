@@ -23,7 +23,7 @@ class DashboardController extends Controller
         $user = Auth::user();
         $user->loadMissing(['unit.department', 'roles']);
 
-        $isStaff = $user->hasAnyRole(['Developer', 'Super Admin', 'Admin']);
+        $isStaff = $user->hasAnyRole(['Developer', 'Super Admin', 'Admin Busdev', 'Admin STMC']);
 
         // Default view: Staf HC melihat 'staff', Karyawan Umum selalu melihat 'employee'
         // Staf juga dapat melihat preview tampilan karyawan dengan parameter ?view=employee

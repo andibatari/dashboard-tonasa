@@ -65,13 +65,13 @@
         <!-- ========================================== -->
         <!-- MENU KHUSUS INTERNAL (Business & Health Services) -->
         <!-- ========================================== -->
-        @hasanyrole('Developer|Super Admin|Admin|Admin STMC|Dokter STMC')
+        @hasanyrole('Developer|Super Admin|Admin Busdev|Admin STMC')
             <div class="pt-5 pb-2 px-3">
                 <span x-show="sidebarOpen || window.innerWidth < 1024" class="text-[10px] font-bold tracking-widest text-[#F5333F] uppercase">Dept. HC & Services</span>
             </div>
 
             <!-- 1. Business & System Development -->
-            @hasanyrole('Developer|Super Admin|Admin')
+            @hasanyrole('Developer|Super Admin|Admin Busdev')
             <div x-data="{ openBusdev: {{ request()->routeIs('busdev.*') ? 'true' : 'false' }} }">
                 <button @click="openBusdev = !openBusdev; if(!sidebarOpen && window.innerWidth >= 1024) sidebarOpen = true" class="flex items-center justify-between w-full px-3 py-2.5 mt-1 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-800/40 group transition-all duration-200 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white focus:outline-none">
                     <div class="flex items-center">
@@ -95,6 +95,7 @@
             @endhasanyrole
 
             <!-- 2. Health Service & STMC -->
+            @hasanyrole('Developer|Super Admin|Admin STMC')
             <div x-data="{ openSTMC: {{ request()->routeIs('jadwal.*', 'karyawan.*', 'scan.qr', 'admin.laporan.*', 'pemantauan.*', 'paket-poli', 'admin.tambah-dokter', 'admin.jadwal-dokter') ? 'true' : 'false' }} }">
                 <button @click="openSTMC = !openSTMC; if(!sidebarOpen && window.innerWidth >= 1024) sidebarOpen = true" class="flex items-center justify-between w-full px-3 py-2.5 mt-1 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-800/40 group transition-all duration-200 {{ request()->routeIs('jadwal.*', 'karyawan.*', 'scan.qr', 'admin.laporan.*', 'pemantauan.*', 'paket-poli', 'admin.tambah-dokter', 'admin.jadwal-dokter') ? 'text-[#F5333F] font-semibold bg-red-50/50 dark:bg-[#F5333F]/10' : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white' }} focus:outline-none">
                     <div class="flex items-center">
@@ -116,6 +117,7 @@
                     <a href="{{ route('pemantauan.index') }}" class="block px-3 py-2 text-[12.5px] font-medium {{ request()->routeIs('pemantauan.*') ? 'text-[#F5333F] font-bold' : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white' }} hover:bg-gray-50 dark:hover:bg-gray-800/40 rounded-lg transition-colors">🌱 Pemantauan Lingkungan</a>
                 </div>
             </div>
+            @endhasanyrole
         @endhasanyrole
 
     </nav>
@@ -169,7 +171,7 @@
                 @endhasanyrole
 
                 <!-- Log Aktivitas Terpadu (Audit Trail) -->
-                @hasanyrole('Developer|Super Admin|Admin|Admin STMC')
+                @hasanyrole('Developer|Super Admin|Admin Busdev|Admin STMC')
                 <a href="{{ route('activity-logs.index') }}" class="flex items-center gap-3 px-3 py-2.5 text-[13.5px] font-medium text-gray-600 transition-colors rounded-xl dark:text-gray-400 hover:bg-red-50 hover:text-[#F5333F] dark:hover:bg-gray-800 dark:hover:text-white">
                     <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                     Log Aktivitas

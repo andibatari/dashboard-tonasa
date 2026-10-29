@@ -12,6 +12,9 @@ use App\Http\Controllers\Auth\VerifyEmailController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('guest')->group(function () {
+    // Rute Single Sign-On (SSO) Akun SIG / Korporat (Google & Microsoft)
+    Route::get('auth/{provider}/redirect', [\App\Http\Controllers\Auth\OAuthController::class, 'redirect'])->name('oauth.redirect');
+    Route::get('auth/{provider}/callback', [\App\Http\Controllers\Auth\OAuthController::class, 'callback'])->name('oauth.callback');
     Route::get('register', [RegisteredUserController::class, 'create'])
         ->name('register');
 

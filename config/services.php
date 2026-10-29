@@ -35,4 +35,19 @@ return [
         ],
     ],
 
+    // SSO Akun Google Workspace Korporat
+    'google' => [
+        'client_id' => env('GOOGLE_CLIENT_ID'),
+        'client_secret' => env('GOOGLE_CLIENT_SECRET'),
+        'redirect' => env('GOOGLE_REDIRECT_URI', env('APP_URL', 'http://localhost:8000') . '/auth/google/callback'),
+    ],
+
+    // SSO Akun Korporat SIG (Microsoft Entra ID / Microsoft 365)
+    'azure' => [
+        'client_id' => env('AZURE_CLIENT_ID'),
+        'client_secret' => env('AZURE_CLIENT_SECRET'),
+        'redirect' => env('AZURE_REDIRECT_URI', env('APP_URL', 'http://localhost:8000') . '/auth/microsoft/callback'),
+        'tenant' => env('AZURE_TENANT_ID', 'common'),
+    ],
+
 ];

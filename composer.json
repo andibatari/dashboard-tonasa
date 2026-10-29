@@ -13,11 +13,13 @@
         "kreait/laravel-firebase": "^7.2",
         "laravel/framework": "^13.17",
         "laravel/sanctum": "^4.3",
+        "laravel/socialite": "^5.31",
         "laravel/tinker": "^3.0",
         "livewire/livewire": "^4.4",
         "maatwebsite/excel": "^4.0",
         "phpoffice/phpword": "^1.4",
         "setasign/fpdi-tcpdf": "^2.3",
+        "socialiteproviders/microsoft-azure": "^5.2",
         "spatie/laravel-activitylog": "^4.12",
         "spatie/laravel-permission": "^8.3"
     },

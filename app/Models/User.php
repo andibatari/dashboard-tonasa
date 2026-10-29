@@ -14,7 +14,7 @@ use Spatie\Permission\Traits\HasRoles;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Activitylog\LogOptions;
 
-#[Fillable(['name', 'email', 'password', 'unit_id'])]
+#[Fillable(['name', 'email', 'password', 'unit_id', 'provider', 'provider_id', 'avatar'])]
 #[Hidden(['password', 'remember_token'])]
 
 //Pastikan class User menggunakan trait HasRoles untuk mengaktifkan fitur role dan permission dari package Spatie
