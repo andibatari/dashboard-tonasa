@@ -82,6 +82,26 @@ class SettingController extends Controller
             return redirect()->route('settings.index', ['tab' => 'tahapan'])->with('error', 'Data tahapan tidak valid.');
         }
 
+        // JIKA YANG DIKIRIM ADALAH FORM "PENGATURAN KLINIK STMC"
+        if ($request->form_type === 'stmc_klinik') {
+            $request->validate([
+                'nama_kepala_klinik' => 'nullable|string|max:255',
+                'teks_disclaimer' => 'nullable|string',
+                'kuota_harian' => 'nullable|numeric|min:1',
+                'jam_buka' => 'nullable|string',
+                'jam_tutup' => 'nullable|string',
+            ]);
+
+            Setting::updateOrCreate(['key' => 'nama_kepala_klinik'], ['value' => $request->input('nama_kepala_klinik', 'Dr. Hj. Fulanah, Sp.KJ'), 'type' => 'text']);
+            Setting::updateOrCreate(['key' => 'teks_disclaimer'], ['value' => $request->input('teks_disclaimer'), 'type' => 'text']);
+            Setting::updateOrCreate(['key' => 'kuota_harian'], ['value' => $request->input('kuota_harian', 50), 'type' => 'number']);
+            Setting::updateOrCreate(['key' => 'jam_buka'], ['value' => $request->input('jam_buka', '08:00'), 'type' => 'text']);
+            Setting::updateOrCreate(['key' => 'jam_tutup'], ['value' => $request->input('jam_tutup', '15:00'), 'type' => 'text']);
+            Setting::updateOrCreate(['key' => 'stmc_maintenance_mode'], ['value' => $request->has('stmc_maintenance_mode') ? '1' : '0', 'type' => 'boolean']);
+
+            return redirect()->route('settings.index', ['tab' => 'klinik'])->with('success', 'Pengaturan Layanan Klinik STMC (QR & Kuota MCU) berhasil diperbarui!');
+        }
+
         return back();
     }
 

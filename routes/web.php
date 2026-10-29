@@ -102,20 +102,22 @@ Route::middleware(['auth', 'role:Developer|Super Admin|Admin'])->prefix('busdev'
     Route::get('/innovation-management/makalah/{id}/download', [InnovationController::class, 'downloadMakalah'])->name('innovation.makalah.download');
 });
 
-// Rute Khusus Pengelola Sistem (Developer & Super Admin)
-Route::middleware(['auth', 'role:Developer|Super Admin'])->group(function () {
-    // Manajemen Akun
-    Route::get('/manajemen-akun', [AccountController::class, 'index'])->name('accounts.index');
-    Route::post('/manajemen-akun', [AccountController::class, 'store'])->name('accounts.store');
-    Route::put('/manajemen-akun/{user}', [AccountController::class, 'update'])->name('accounts.update'); 
-    Route::delete('/manajemen-akun/{user}', [AccountController::class, 'destroy'])->name('accounts.destroy');
+// Rute Khusus Pengelola Sistem (Developer, Super Admin, & Admin)
+Route::middleware(['auth', 'role:Developer|Super Admin|Admin|Admin STMC'])->group(function () {
+    // Manajemen Akun (hanya Developer & Super Admin)
+    Route::middleware('role:Developer|Super Admin')->group(function () {
+        Route::get('/manajemen-akun', [AccountController::class, 'index'])->name('accounts.index');
+        Route::post('/manajemen-akun', [AccountController::class, 'store'])->name('accounts.store');
+        Route::put('/manajemen-akun/{user}', [AccountController::class, 'update'])->name('accounts.update'); 
+        Route::delete('/manajemen-akun/{user}', [AccountController::class, 'destroy'])->name('accounts.destroy');
+    });
 
-    // Log Aktivitas (Audit Trail)
+    // Log Aktivitas Terpadu (Audit Trail Seluruh Sistem & STMC)
     Route::get('/log-aktivitas', [App\Http\Controllers\ActivityLogController::class, 'index'])->name('activity-logs.index');
 });
 
-// Rute Pengaturan Sistem (Admin Busdev boleh masuk)
-Route::middleware(['auth', 'role:Developer|Super Admin|Admin'])->group(function () {
+// Rute Pengaturan Sistem Terpadu (Busdev & STMC)
+Route::middleware(['auth', 'role:Developer|Super Admin|Admin|Admin STMC'])->group(function () {
     Route::get('/pengaturan', [SettingController::class, 'index'])->name('settings.index');
     Route::post('/pengaturan', [SettingController::class, 'update'])->name('settings.update');
     Route::put('/pengaturan/templates', [SettingController::class, 'updateTemplates'])->name('settings.update-templates');

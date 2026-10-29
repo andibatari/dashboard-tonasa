@@ -65,6 +65,17 @@
                             </div>
                             <span class="px-1.5 py-0.5 text-[8px] font-black uppercase tracking-wider bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400 rounded">ROADMAP</span>
                         </button>
+
+                        <!-- Menu 5: Layanan Kesehatan STMC -->
+                        <button @click="tab = 'klinik'" 
+                                :class="tab === 'klinik' ? 'bg-red-50 text-red-600 dark:bg-red-500/10 dark:text-red-400' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/50 hover:text-slate-900 dark:hover:text-slate-200'" 
+                                class="w-full flex items-center justify-between px-4 py-3 rounded-xl text-sm font-bold transition-all text-left group">
+                            <div class="flex items-center gap-3">
+                                <svg class="w-5 h-5 text-red-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" /></svg>
+                                Klinik STMC
+                            </div>
+                            <span class="px-1.5 py-0.5 text-[8px] font-black uppercase tracking-wider bg-red-100 text-red-700 dark:bg-red-500/20 dark:text-red-400 rounded">HEALTH</span>
+                        </button>
                     </div>
                 </div>
 
@@ -471,6 +482,96 @@
 
                                     <button type="submit" class="px-6 py-2.5 text-sm font-black text-white bg-slate-900 dark:bg-white dark:text-slate-900 rounded-xl hover:bg-slate-800 dark:hover:bg-gray-200 shadow-md hover:-translate-y-0.5 transition-all cursor-pointer">
                                         Simpan Perubahan Tahapan
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- ============================================== -->
+                    <!-- KONTEN 5: LAYANAN KESEHATAN STMC (KLINIK & MCU) -->
+                    <!-- ============================================== -->
+                    <div x-show="tab === 'klinik'" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-4" x-transition:enter-end="opacity-100 translate-y-0" style="display: none;">
+                        <div class="mb-6">
+                            <h2 class="text-2xl font-black text-gray-900 dark:text-white">Pengaturan Klinik STMC & MCU</h2>
+                            <p class="text-sm font-medium text-gray-500 dark:text-gray-400 mt-1">Konfigurasi operasional MCU, aturan check-in QR, kuota harian, serta template laporan medis.</p>
+                        </div>
+
+                        <div class="bg-white dark:bg-[#1A1A1A] border border-gray-100 dark:border-gray-800 rounded-2xl shadow-sm overflow-hidden p-6">
+                            <form action="{{ route('settings.update') }}" method="POST">
+                                @csrf
+                                <input type="hidden" name="form_type" value="stmc_klinik">
+
+                                @php
+                                    $kepalaKlinik = $settings['nama_kepala_klinik']->value ?? 'Dr. Hj. Fulanah, Sp.KJ';
+                                    $disclaimer = $settings['teks_disclaimer']->value ?? 'Pada Pemeriksaan Kesehatan Berkala di Klinik Semen Tonasa Medical Centre yang dilakukan pada tanggal [TANGGAL], ternyata Bapak/Ibu/Sdr (i) harus memperhatikan hal-hal sebagai berikut:';
+                                    $kuotaHarian = $settings['kuota_harian']->value ?? 50;
+                                    $jamBuka = $settings['jam_buka']->value ?? '08:00';
+                                    $jamTutup = $settings['jam_tutup']->value ?? '15:00';
+                                    $isMaintenanceStmc = ($settings['stmc_maintenance_mode']->value ?? '0') === '1';
+                                @endphp
+
+                                <!-- Section 1: Kuota MCU & Operasional QR Check-in -->
+                                <div class="mb-8">
+                                    <h3 class="text-sm font-black text-slate-800 dark:text-white uppercase tracking-wider mb-4 pb-2 border-b border-slate-100 dark:border-slate-800 flex items-center gap-2">
+                                        <i class="fas fa-qrcode text-red-500"></i> Pendaftaran & Antrean QR
+                                    </h3>
+                                    <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+                                        <div>
+                                            <label class="block text-xs font-bold uppercase text-slate-600 dark:text-slate-300 mb-1.5">Kuota Pasien MCU / Hari</label>
+                                            <input type="number" name="kuota_harian" value="{{ $kuotaHarian }}" min="1" max="500" class="w-full px-4 py-2.5 text-sm rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 font-bold focus:ring-red-500 focus:border-red-500">
+                                            <p class="text-[11px] text-slate-400 mt-1">Batas maksimal kuota booking per tanggal.</p>
+                                        </div>
+
+                                        <div>
+                                            <label class="block text-xs font-bold uppercase text-slate-600 dark:text-slate-300 mb-1.5">Jam Buka Klinik</label>
+                                            <input type="text" name="jam_buka" value="{{ $jamBuka }}" placeholder="08:00" class="w-full px-4 py-2.5 text-sm rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 font-medium focus:ring-red-500 focus:border-red-500">
+                                            <p class="text-[11px] text-slate-400 mt-1">Format 24 jam (WITA).</p>
+                                        </div>
+
+                                        <div>
+                                            <label class="block text-xs font-bold uppercase text-slate-600 dark:text-slate-300 mb-1.5">Jam Tutup Klinik</label>
+                                            <input type="text" name="jam_tutup" value="{{ $jamTutup }}" placeholder="15:00" class="w-full px-4 py-2.5 text-sm rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 font-medium focus:ring-red-500 focus:border-red-500">
+                                            <p class="text-[11px] text-slate-400 mt-1">Format 24 jam (WITA).</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Section 2: Format Laporan Medis (Kop & Disclaimer) -->
+                                <div class="mb-8">
+                                    <h3 class="text-sm font-black text-slate-800 dark:text-white uppercase tracking-wider mb-4 pb-2 border-b border-slate-100 dark:border-slate-800 flex items-center gap-2">
+                                        <i class="fas fa-file-medical text-red-500"></i> Format Laporan & Resume MCU
+                                    </h3>
+                                    <div class="space-y-4">
+                                        <div>
+                                            <label class="block text-xs font-bold uppercase text-slate-600 dark:text-slate-300 mb-1.5">Nama & Gelar Kepala Klinik</label>
+                                            <input type="text" name="nama_kepala_klinik" value="{{ $kepalaKlinik }}" class="w-full px-4 py-2.5 text-sm rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 font-semibold focus:ring-red-500 focus:border-red-500">
+                                            <p class="text-[11px] text-slate-400 mt-1">Nama pejabat yang tertera pada lembar pengesahan resume medis.</p>
+                                        </div>
+
+                                        <div>
+                                            <label class="block text-xs font-bold uppercase text-slate-600 dark:text-slate-300 mb-1.5">Teks Disclaimer / Catatan Pembuka Laporan</label>
+                                            <textarea name="teks_disclaimer" rows="3" class="w-full px-4 py-2.5 text-sm rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 focus:ring-red-500 focus:border-red-500">{{ $disclaimer }}</textarea>
+                                            <p class="text-[11px] text-slate-400 mt-1">Teks pengantar di bagian atas lembar resume hasil pemeriksaan.</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Section 3: Status Pemeliharaan Klinik -->
+                                <div class="mb-8 p-5 bg-slate-50/50 dark:bg-slate-800/30 border border-slate-100 dark:border-slate-800 rounded-xl flex items-center justify-between">
+                                    <div>
+                                        <h4 class="text-sm font-black text-slate-800 dark:text-white">Mode Pemeliharaan (Maintenance) STMC</h4>
+                                        <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Jika diaktifkan, pendaftaran MCU baru di aplikasi mobile akan ditutup sementara.</p>
+                                    </div>
+                                    <label class="relative inline-flex items-center cursor-pointer">
+                                        <input type="checkbox" name="stmc_maintenance_mode" value="1" {{ $isMaintenanceStmc ? 'checked' : '' }} class="sr-only peer">
+                                        <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-red-600"></div>
+                                    </label>
+                                </div>
+
+                                <div class="pt-4 border-t border-slate-100 dark:border-slate-800 flex justify-end">
+                                    <button type="submit" class="px-6 py-2.5 text-sm font-black text-white bg-red-600 rounded-xl hover:bg-red-700 shadow-md hover:-translate-y-0.5 transition-all cursor-pointer">
+                                        Simpan Pengaturan STMC
                                     </button>
                                 </div>
                             </form>

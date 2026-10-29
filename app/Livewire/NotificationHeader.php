@@ -3,12 +3,15 @@
 namespace App\Livewire;
 
 use Livewire\Component;
-use App\Models\JadwalMcu; 
+use App\Models\JadwalMcu;
+use App\Models\KmstRegistration;
+use Carbon\Carbon;
 
 class NotificationHeader extends Component
 {
     public $unreadNotificationsCount = 0;
-    public $latestNotifications = []; // Variabel baru untuk menampung daftar notifikasi
+    public $latestMcuNotifications = [];
+    public $latestKmstNotifications = [];
 
     public function mount()
     {
@@ -17,23 +20,32 @@ class NotificationHeader extends Component
     
     public function checkNotifications()
     {
-        // 1. Hitung HANYA yang belum dibaca untuk memunculkan Angka Merah di Lonceng
-        $this->unreadNotificationsCount = JadwalMcu::where('status', 'Scheduled')
-                                                   ->where('is_read_admin', false)
-                                                   ->count();
+        // 1. Notifikasi MCU Belum Dibaca
+        $unreadMcu = JadwalMcu::where('status', 'Scheduled')
+                              ->where('is_read_admin', false)
+                              ->count();
 
-        // 2. SELALU ambil 5 data terbaru (Tidak peduli sudah dibaca atau belum)
-        // Hapus `where('is_read_admin', false)` dari sini agar datanya tidak hilang tiba-tiba!
-        $this->latestNotifications = JadwalMcu::with('karyawan','pesertaMcu') 
+        // 2. Pendaftaran KMST Inovasi terbaru (1 hari terakhir)
+        $newKmst = KmstRegistration::where('created_at', '>=', Carbon::now()->subDay())->count();
+
+        $this->unreadNotificationsCount = $unreadMcu + $newKmst;
+
+        // 3. Ambil 5 data Jadwal MCU terbaru
+        $this->latestMcuNotifications = JadwalMcu::with(['karyawan', 'pesertaMcu']) 
             ->where('status', 'Scheduled')
             ->latest('created_at') 
             ->take(5) 
+            ->get();
+
+        // 4. Ambil 5 pendaftaran KMST terbaru
+        $this->latestKmstNotifications = KmstRegistration::with('user')
+            ->latest('created_at')
+            ->take(5)
             ->get();
     }
 
     public function markNotificationsAsRead()
     {
-        // Ubah status "belum dibaca" menjadi "sudah dibaca"
         if ($this->unreadNotificationsCount > 0) {
             JadwalMcu::where('status', 'Scheduled')
                      ->where('is_read_admin', false)

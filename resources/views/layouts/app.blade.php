@@ -42,7 +42,7 @@
         <!-- Area Konten Utama -->
         <div class="flex flex-col flex-1 overflow-y-auto overflow-x-hidden z-10 w-full">
             
-            @isset($header)
+
                 <header class="sticky top-0 z-20 bg-white/95 dark:bg-gray-800/95 backdrop-blur-md border-b border-gray-200 dark:border-gray-700/80 shadow-xs transition-colors duration-300">
                     <div class="flex items-center justify-between px-3 py-2.5 sm:px-6 sm:py-3.5 w-full">
                         
@@ -53,13 +53,36 @@
                             </button>
                             <div class="min-w-0 flex-1 header-slot-wrapper">
                                 <div class="text-xs sm:text-sm md:text-base lg:text-lg font-extrabold text-gray-900 dark:text-white uppercase tracking-tight truncate leading-tight">
-                                    {{ $header }}
+                                    @if(isset($header))
+                                        {{ $header }}
+                                    @else
+                                        @php
+                                            $routeTitle = match(true) {
+                                                request()->routeIs('jadwal.*') => 'Jadwal & Antrean MCU',
+                                                request()->routeIs('karyawan.*') => 'Data Karyawan & Pasien',
+                                                request()->routeIs('scan.qr') => 'Scan Kehadiran QR MCU',
+                                                request()->routeIs('admin.tambah-dokter') => 'Kelola Data Dokter',
+                                                request()->routeIs('admin.jadwal-dokter') => 'Jadwal Praktik Dokter',
+                                                request()->routeIs('paket-poli') => 'Kelola Paket & Poli MCU',
+                                                request()->routeIs('admin.laporan.*') => 'Rekam Medis & Laporan',
+                                                request()->routeIs('pemantauan.*') => 'Pemantauan Lingkungan Kerja',
+                                                request()->routeIs('settings.*') => 'Pengaturan Sistem Terpadu',
+                                                request()->routeIs('activity-logs.*') => 'Audit Trail & Log Aktivitas',
+                                                request()->routeIs('accounts.*') => 'Manajemen Akun Pengguna',
+                                                default => 'PT Semen Tonasa - Portal'
+                                            };
+                                        @endphp
+                                        {{ $routeTitle }}
+                                    @endif
                                 </div>
                             </div>
                         </div>
                         
-                        <!-- Sisi Kanan: Theme Toggle & Profil Dropdown (Flex-Shrink-0 agar tidak pernah terpotong di mode HP) -->
+                        <!-- Sisi Kanan: Lonceng Notifikasi, Theme Toggle & Profil Dropdown (Flex-Shrink-0 agar tidak pernah terpotong di mode HP) -->
                         <div class="flex items-center gap-1 sm:gap-3 flex-shrink-0">
+                            
+                            <!-- Lonceng Notifikasi Terpadu (KMST & STMC) -->
+                            @livewire('notification-header')
                             
                             <!-- Tombol Dark/Light Mode -->
                             <button onclick="
@@ -107,7 +130,7 @@
                         </div>
                     </div>
                 </header>
-            @endisset
+
 
             <main class="p-3 sm:p-5 md:p-6 w-full flex-1">
                 @if (isset($slot))
