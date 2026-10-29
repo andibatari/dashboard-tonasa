@@ -117,3 +117,4 @@ class SendAutomatedMcuReminders extends Command
         return 0;
     }
 }
+

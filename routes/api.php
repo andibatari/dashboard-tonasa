@@ -19,6 +19,9 @@ use App\Models\Karyawan;
 // Rute Publik (Akses tanpa token)
 // Endpoint untuk memvalidasi kredensial pengguna dan mengembalikan token Sanctum
 Route::post('/login', [ApiAuthController::class, 'login']);
+// Endpoint Pendaftaran & Aktivasi Akun Mobile (Karyawan & Peserta Umum)
+Route::post('/register/karyawan', [ApiAuthController::class, 'registerKaryawan']);
+Route::post('/register/umum', [ApiAuthController::class, 'registerUmum']);
 // Endpoint untuk mengunduh rekapitulasi laporan MCU akhir berdasarkan ID jadwal
 Route::get('/jadwal-mcu/download-laporan-gabungan/{id}', [JadwalMcuApiController::class, 'downloadLaporanGabungan']);
 

@@ -602,8 +602,8 @@
                                         Desa Biringere, Kec. Bungoro, Kab. Pangkajene &amp; Kepulauan (Pangkep), Sulawesi Selatan 90615
                                     </p>
                                     <div class="mt-3 text-xs text-slate-700 font-medium space-y-1">
-                                        <p><span class="text-slate-400">Telepon:</span> (0410) 312345 (Hunting)</p>
-                                        <p><span class="text-slate-400">Email:</span> humas@sementonasa.co.id</p>
+                                        <p><span class="text-slate-400">Telepon:</span> - </p>
+                                        <p><span class="text-slate-400">Email:</span> - </p>
                                     </div>
                                 </div>
                             </div>
@@ -618,10 +618,10 @@
                                 <div>
                                     <h4 class="text-base font-bold text-slate-900 font-display">Kantor Perwakilan Makassar</h4>
                                     <p class="mt-1 text-xs text-slate-600 leading-relaxed">
-                                        Gedung Graha Pena Lt. 15, Jl. Urip Sumoharjo No. 20, Makassar, Sulawesi Selatan
+                                        Jl. Khairil Anwar No. 1, Makassar, Sulawesi Selatan 90113
                                     </p>
                                     <div class="mt-3 text-xs text-slate-700 font-medium">
-                                        <p><span class="text-slate-400">Telepon:</span> (0411) 453221</p>
+                                        <p><span class="text-slate-400">Telepon:</span> - </p>
                                     </div>
                                 </div>
                             </div>
@@ -639,8 +639,8 @@
                                         Dukungan teknis akun korporat dan operasional sistem informasi antar unit.
                                     </p>
                                     <div class="mt-3 text-xs text-slate-700 font-medium space-y-1">
-                                        <p><span class="text-slate-400">Jam Layanan:</span> Senin - Jumat (08.00 - 17.00 WITA)</p>
-                                        <p><span class="text-slate-400">Helpdesk:</span> portal.support@sementonasa.co.id</p>
+                                        <p><span class="text-slate-400">Jam Layanan:</span> Senin - Jumat (08.00 - 16.30 WITA)</p>
+                                        <p><span class="text-slate-400">Helpdesk:</span> - </p>
                                     </div>
                                 </div>
                             </div>
@@ -657,8 +657,8 @@
                             </p>
 
                             <div x-show="sent" 
-                                 x-transition 
-                                 class="mt-6 p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-sm flex items-center gap-3">
+                                x-transition 
+                                class="mt-6 p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-sm flex items-center gap-3">
                                 <svg class="w-5 h-5 text-emerald-600 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
                                 <span>Terima kasih! Pesan Anda telah terkirim ke tim layanan PT Semen Tonasa. Kami akan segera menindaklanjutinya.</span>
                             </div>

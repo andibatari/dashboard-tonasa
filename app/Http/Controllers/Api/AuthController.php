@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use App\Models\EmployeeLogin;
 use App\Models\PesertaMcuLogin;
+use App\Models\Karyawan;
+use App\Models\PesertaMcu;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
@@ -72,6 +74,202 @@ class AuthController extends Controller
                 'status' => 'error',
                 'message' => 'Server error saat login',
                 'debug' => config('app.debug') ? $e->getMessage() : null
+            ], 500);
+        }
+    }
+
+    /**
+     * AKTIVASI AKUN KARYAWAN (Self-Activation via SAP + NIK)
+     * POST /api/register/karyawan
+     */
+    public function registerKaryawan(Request $request)
+    {
+        try {
+            $data = $request->validate([
+                'no_sap'                => 'required|string',
+                'nik'                   => 'required|string',
+                'password'              => 'required|string|min:6|confirmed',
+                'no_hp'                 => 'nullable|string|max:20',
+                'email'                 => 'nullable|email|max:255',
+                'fcm_token'             => 'nullable|string',
+            ], [
+                'no_sap.required'       => 'Nomor SAP wajib diisi',
+                'nik.required'          => 'Nomor NIK KTP wajib diisi',
+                'password.required'     => 'Kata sandi wajib diisi',
+                'password.min'          => 'Kata sandi minimal 6 karakter',
+                'password.confirmed'    => 'Konfirmasi kata sandi tidak cocok',
+            ]);
+
+            $noSap = trim($data['no_sap']);
+            $nik = trim($data['nik']);
+
+            // 1. Cari data master karyawan di database Semen Tonasa
+            $karyawan = Karyawan::where('no_sap', $noSap)->first();
+
+            if (!$karyawan) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Nomor SAP tidak terdaftar di sistem PT Semen Tonasa. Pastikan No. SAP benar atau hubungi Admin HC/STMC.'
+                ], 404);
+            }
+
+            // 2. Verifikasi NIK KTP
+            if (!empty($karyawan->nik_karyawan) && trim($karyawan->nik_karyawan) !== $nik) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'NIK KTP tidak cocok dengan data Nomor SAP ini. Pastikan Anda memasukkan NIK resmi Anda.'
+                ], 422);
+            }
+
+            // 3. Cek apakah akun login sudah pernah diaktifkan sebelumnya
+            $existingLogin = EmployeeLogin::where('karyawan_id', $karyawan->id)
+                ->orWhere('no_sap', $noSap)
+                ->first();
+
+            if ($existingLogin) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Akun untuk No. SAP ini sudah aktif. Silakan langsung login di halaman utama.'
+                ], 422);
+            }
+
+            // 4. Update data pelengkap karyawan jika sebelumnya kosong
+            if (!empty($data['no_hp'])) {
+                $karyawan->no_hp = $data['no_hp'];
+            }
+            if (!empty($data['email'])) {
+                $karyawan->email = $data['email'];
+            }
+            if (empty($karyawan->nik_karyawan)) {
+                $karyawan->nik_karyawan = $nik;
+            }
+            $karyawan->save();
+
+            // 5. Buat kredensial login baru
+            $loginUser = EmployeeLogin::create([
+                'karyawan_id' => $karyawan->id,
+                'no_sap'      => $noSap,
+                'password'    => Hash::make($data['password']),
+                'fcm_token'   => $data['fcm_token'] ?? null,
+            ]);
+
+            // 6. Terbitkan Sanctum token untuk langsung masuk
+            $token = $loginUser->createToken('api-token')->plainTextToken;
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Aktivasi akun berhasil! Selamat datang di STMC Health.',
+                'token' => $token,
+                'user_profile' => $this->getProfileData($loginUser)
+            ], 201);
+
+        } catch (ValidationException $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => collect($e->errors())->flatten()->first(),
+                'errors' => $e->errors()
+            ], 422);
+        } catch (\Throwable $e) {
+            Log::error("Register Karyawan Error: " . $e->getMessage());
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Gagal memproses aktivasi akun. Silakan coba lagi nanti.'
+            ], 500);
+        }
+    }
+
+    /**
+     * PENDAFTARAN MANDIRI PESERTA UMUM (Pasien Luar / Keluarga)
+     * POST /api/register/umum
+     */
+    public function registerUmum(Request $request)
+    {
+        try {
+            $data = $request->validate([
+                'nik'                   => 'required|string|size:16',
+                'nama_lengkap'          => 'required|string|max:255',
+                'jenis_kelamin'         => 'required|in:Laki-laki,Perempuan',
+                'tanggal_lahir'         => 'required|date',
+                'tempat_lahir'          => 'nullable|string|max:100',
+                'no_hp'                 => 'required|string|max:20',
+                'email'                 => 'nullable|email|max:255',
+                'alamat'                => 'nullable|string',
+                'perusahaan_asal'       => 'nullable|string|max:150',
+                'password'              => 'required|string|min:6|confirmed',
+                'fcm_token'             => 'nullable|string',
+            ], [
+                'nik.required'          => 'Nomor NIK KTP (16 digit) wajib diisi',
+                'nik.size'              => 'NIK KTP harus 16 digit angka',
+                'nama_lengkap.required' => 'Nama lengkap sesuai KTP wajib diisi',
+                'jenis_kelamin.required'=> 'Pilih jenis kelamin',
+                'tanggal_lahir.required'=> 'Tanggal lahir wajib diisi',
+                'no_hp.required'        => 'Nomor HP / WhatsApp wajib diisi',
+                'password.required'     => 'Kata sandi wajib diisi',
+                'password.min'          => 'Kata sandi minimal 6 karakter',
+                'password.confirmed'    => 'Konfirmasi kata sandi tidak cocok',
+            ]);
+
+            $nik = trim($data['nik']);
+
+            // 1. Cek apakah NIK sudah punya akun login
+            $existingLogin = PesertaMcuLogin::where('nik_pasien', $nik)->first();
+            if ($existingLogin) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'NIK ini sudah terdaftar sebagai Peserta Umum. Silakan langsung login di aplikasi.'
+                ], 422);
+            }
+
+            // 2. Hitung umur dari tanggal lahir
+            $tglLahir = \Carbon\Carbon::parse($data['tanggal_lahir']);
+            $umur = $tglLahir->age;
+
+            // 3. Buat atau update profil PesertaMcu
+            $pasien = PesertaMcu::updateOrCreate(
+                ['nik_pasien' => $nik],
+                [
+                    'nama_lengkap'      => trim($data['nama_lengkap']),
+                    'tipe_anggota'      => 'Non-Karyawan',
+                    'jenis_kelamin'     => $data['jenis_kelamin'],
+                    'tanggal_lahir'     => $data['tanggal_lahir'],
+                    'tempat_lahir'      => $data['tempat_lahir'] ?? null,
+                    'umur'              => $umur,
+                    'no_hp'             => $data['no_hp'],
+                    'email'             => $data['email'] ?? null,
+                    'alamat'            => $data['alamat'] ?? null,
+                    'perusahaan_asal'   => $data['perusahaan_asal'] ?? 'Umum / Mandiri',
+                ]
+            );
+
+            // 4. Buat akun login peserta umum
+            $loginUser = PesertaMcuLogin::create([
+                'nik_pasien'        => $nik,
+                'peserta_mcu_id'    => $pasien->id,
+                'password'          => Hash::make($data['password']),
+                'fcm_token'         => $data['fcm_token'] ?? null,
+            ]);
+
+            // 5. Terbitkan Sanctum token untuk langsung masuk
+            $token = $loginUser->createToken('api-token')->plainTextToken;
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Pendaftaran Peserta Umum berhasil! Selamat datang di STMC Health.',
+                'token' => $token,
+                'user_profile' => $this->getProfileData($loginUser)
+            ], 201);
+
+        } catch (ValidationException $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => collect($e->errors())->flatten()->first(),
+                'errors' => $e->errors()
+            ], 422);
+        } catch (\Throwable $e) {
+            Log::error("Register Umum Error: " . $e->getMessage());
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Gagal memproses pendaftaran. Silakan coba lagi nanti.'
             ], 500);
         }
     }
