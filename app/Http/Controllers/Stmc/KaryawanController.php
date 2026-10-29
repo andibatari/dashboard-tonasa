@@ -139,7 +139,7 @@ class KaryawanController extends Controller
             // $pasien->nama_karyawan = $request->nama;
             // $pasien->hubungan = 'Non-Karyawan';
             // $pasien->save();
-            return redirect()->route('bebas.route.pasien')->with('success', 'Pasien non-karyawan berhasil ditambahkan!');
+            return redirect()->route('karyawan.index')->with('success', 'Pasien non-karyawan berhasil ditambahkan!');
         }
     }
     
