@@ -585,115 +585,61 @@
                     </p>
                 </div>
 
-                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8 max-w-7xl mx-auto">
                     
-                    <!-- Kolom Kiri: Informasi Kantor & Layanan -->
-                    <div class="lg:col-span-5 space-y-4">
-                        
-                        <!-- Kantor Pusat & Pabrik Pangkep -->
-                        <div class="p-6 sm:p-7 rounded-3xl bg-white border border-slate-200/80 shadow-md shadow-slate-200/30 hover:border-red-500/30 transition-all">
-                            <div class="flex items-start gap-4">
-                                <div class="w-11 h-11 rounded-2xl bg-red-50 text-[#F5333F] flex items-center justify-center shrink-0">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-                                </div>
-                                <div>
-                                    <h4 class="text-base font-bold text-slate-900 font-display">Kantor Pusat &amp; Pabrik</h4>
-                                    <p class="mt-1 text-xs text-slate-600 leading-relaxed">
-                                        Desa Biringere, Kec. Bungoro, Kab. Pangkajene &amp; Kepulauan (Pangkep), Sulawesi Selatan 90615
-                                    </p>
-                                    <div class="mt-3 text-xs text-slate-700 font-medium space-y-1">
-                                        <p><span class="text-slate-400">Telepon:</span> - </p>
-                                        <p><span class="text-slate-400">Email:</span> - </p>
-                                    </div>
-                                </div>
+                    <!-- Kantor Pusat & Pabrik Pangkep -->
+                    <div class="p-6 sm:p-7 rounded-3xl bg-white border border-slate-200/80 shadow-md shadow-slate-200/30 hover:border-red-500/30 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between h-full">
+                        <div class="flex items-start gap-4">
+                            <div class="w-11 h-11 rounded-2xl bg-red-50 text-[#F5333F] flex items-center justify-center shrink-0 shadow-xs">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                            </div>
+                            <div>
+                                <h4 class="text-base font-bold text-slate-900 font-display">Kantor Pusat &amp; Pabrik</h4>
+                                <p class="mt-1 text-xs text-slate-600 leading-relaxed">
+                                    Desa Biringere, Kec. Bungoro, Kab. Pangkajene &amp; Kepulauan (Pangkep), Sulawesi Selatan 90615
+                                </p>
                             </div>
                         </div>
-
-                        <!-- Kantor Perwakilan Makassar -->
-                        <div class="p-6 sm:p-7 rounded-3xl bg-white border border-slate-200/80 shadow-md shadow-slate-200/30 hover:border-red-500/30 transition-all">
-                            <div class="flex items-start gap-4">
-                                <div class="w-11 h-11 rounded-2xl bg-slate-100 text-slate-700 flex items-center justify-center shrink-0">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
-                                </div>
-                                <div>
-                                    <h4 class="text-base font-bold text-slate-900 font-display">Kantor Perwakilan Makassar</h4>
-                                    <p class="mt-1 text-xs text-slate-600 leading-relaxed">
-                                        Jl. Khairil Anwar No. 1, Makassar, Sulawesi Selatan 90113
-                                    </p>
-                                    <div class="mt-3 text-xs text-slate-700 font-medium">
-                                        <p><span class="text-slate-400">Telepon:</span> - </p>
-                                    </div>
-                                </div>
-                            </div>
+                        <div class="mt-4 pt-3 border-t border-slate-100 text-xs text-slate-700 font-medium space-y-1">
+                            <p><span class="text-slate-400">Telepon:</span> - </p>
+                            <p><span class="text-slate-400">Email:</span> - </p>
                         </div>
-
-                        <!-- Helpdesk Portal & Unit Kerja -->
-                        <div class="p-6 sm:p-7 rounded-3xl bg-white border border-slate-200/80 shadow-md shadow-slate-200/30 hover:border-red-500/30 transition-all">
-                            <div class="flex items-start gap-4">
-                                <div class="w-11 h-11 rounded-2xl bg-red-50 text-[#F5333F] flex items-center justify-center shrink-0">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
-                                </div>
-                                <div>
-                                    <h4 class="text-base font-bold text-slate-900 font-display">Helpdesk Portal Karyawan</h4>
-                                    <p class="mt-1 text-xs text-slate-600 leading-relaxed">
-                                        Dukungan teknis akun korporat dan operasional sistem informasi antar unit.
-                                    </p>
-                                    <div class="mt-3 text-xs text-slate-700 font-medium space-y-1">
-                                        <p><span class="text-slate-400">Jam Layanan:</span> Senin - Jumat (08.00 - 16.30 WITA)</p>
-                                        <p><span class="text-slate-400">Helpdesk:</span> - </p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
                     </div>
 
-                    <!-- Kolom Kanan: Form Kirim Pesan Cepat -->
-                    <div class="lg:col-span-7" x-data="{ sent: false }">
-                        <div class="p-8 sm:p-10 rounded-3xl bg-white border border-slate-200/80 shadow-xl shadow-slate-200/40">
-                            <h3 class="text-2xl font-extrabold text-slate-900 font-display">Kirim Pesan atau Pertanyaan</h3>
-                            <p class="mt-2 text-sm text-slate-500">
-                                Isi formulir di bawah ini untuk terhubung langsung dengan tim humas atau helpdesk layanan terpadu.
-                            </p>
-
-                            <div x-show="sent" 
-                                x-transition 
-                                class="mt-6 p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-sm flex items-center gap-3">
-                                <svg class="w-5 h-5 text-emerald-600 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
-                                <span>Terima kasih! Pesan Anda telah terkirim ke tim layanan PT Semen Tonasa. Kami akan segera menindaklanjutinya.</span>
+                    <!-- Kantor Perwakilan Makassar -->
+                    <div class="p-6 sm:p-7 rounded-3xl bg-white border border-slate-200/80 shadow-md shadow-slate-200/30 hover:border-red-500/30 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between h-full">
+                        <div class="flex items-start gap-4">
+                            <div class="w-11 h-11 rounded-2xl bg-slate-100 text-slate-700 flex items-center justify-center shrink-0 shadow-xs">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
                             </div>
+                            <div>
+                                <h4 class="text-base font-bold text-slate-900 font-display">Kantor Perwakilan Makassar</h4>
+                                <p class="mt-1 text-xs text-slate-600 leading-relaxed">
+                                    Jl. Khairil Anwar No. 1, Makassar, Sulawesi Selatan 90113
+                                </p>
+                            </div>
+                        </div>
+                        <div class="mt-4 pt-3 border-t border-slate-100 text-xs text-slate-700 font-medium">
+                            <p><span class="text-slate-400">Telepon:</span> - </p>
+                        </div>
+                    </div>
 
-                            <form x-show="!sent" @submit.prevent="sent = true" class="mt-6 space-y-4">
-                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                    <div>
-                                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Nama Lengkap</label>
-                                        <input type="text" required placeholder="Nama Anda" class="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 text-sm text-slate-900 focus:bg-white focus:border-[#F5333F] focus:ring-4 focus:ring-red-100 focus:outline-none transition">
-                                    </div>
-                                    <div>
-                                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Alamat Email</label>
-                                        <input type="email" required placeholder="nama@instansi.com" class="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 text-sm text-slate-900 focus:bg-white focus:border-[#F5333F] focus:ring-4 focus:ring-red-100 focus:outline-none transition">
-                                    </div>
-                                </div>
-
-                                <div>
-                                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Kategori Keperluan</label>
-                                    <select class="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 text-sm text-slate-700 focus:bg-white focus:border-[#F5333F] focus:ring-4 focus:ring-red-100 focus:outline-none transition">
-                                        <option>Pertanyaan Umum &amp; Informasi Perusahaan</option>
-                                        <option>Layanan &amp; Portal Karyawan</option>
-                                        <option>Kemitraan, Penjualan &amp; Proyek</option>
-                                        <option>Bantuan Teknis Sistem / IT Helpdesk</option>
-                                    </select>
-                                </div>
-
-                                <div>
-                                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Pesan atau Pertanyaan</label>
-                                    <textarea rows="4" required placeholder="Tuliskan pesan atau kebutuhan informasi Anda di sini..." class="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 text-sm text-slate-900 focus:bg-white focus:border-[#F5333F] focus:ring-4 focus:ring-red-100 focus:outline-none transition"></textarea>
-                                </div>
-
-                                <button type="submit" class="w-full sm:w-auto px-8 py-3.5 text-sm font-bold text-white transition bg-[#F5333F] rounded-xl shadow-lg shadow-red-500/25 hover:bg-red-600 hover:-translate-y-0.5 focus:outline-none">
-                                    Kirim Pesan Sekarang
-                                </button>
-                            </form>
+                    <!-- Helpdesk Portal Karyawan -->
+                    <div class="p-6 sm:p-7 rounded-3xl bg-white border border-slate-200/80 shadow-md shadow-slate-200/30 hover:border-red-500/30 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between h-full">
+                        <div class="flex items-start gap-4">
+                            <div class="w-11 h-11 rounded-2xl bg-red-50 text-[#F5333F] flex items-center justify-center shrink-0 shadow-xs">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+                            </div>
+                            <div>
+                                <h4 class="text-base font-bold text-slate-900 font-display">Helpdesk Portal Karyawan</h4>
+                                <p class="mt-1 text-xs text-slate-600 leading-relaxed">
+                                    Dukungan teknis akun korporat dan operasional sistem informasi antar unit.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="mt-4 pt-3 border-t border-slate-100 text-xs text-slate-700 font-medium space-y-1">
+                            <p><span class="text-slate-400">Jam Layanan:</span> Senin - Jumat (08.00 - 16.30 WITA)</p>
+                            <p><span class="text-slate-400">Helpdesk:</span> - </p>
                         </div>
                     </div>
 
