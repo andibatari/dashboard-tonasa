@@ -136,6 +136,15 @@ Route::middleware(['auth', 'role:Developer|Super Admin|Admin|Admin STMC|Dokter S
     Route::get('/scan-qr', \App\Livewire\QrScanner::class)->name('scan.qr');
     Route::get('/kelola-paket-poli', \App\Livewire\PaketPoli::class)->name('paket-poli');
 
+    // Manajemen Dokter
+    Route::get('/dokter', \App\Livewire\Admin\TambahDokter::class)->name('admin.tambah-dokter');
+
+    // Pengaturan Sistem STMC (QR & Kuota MCU)
+    Route::get('/pengaturan-klinik', \App\Livewire\Admin\SystemSettings::class)->name('stmc.settings');
+
+    // Audit Trail Rekam Medis
+    Route::get('/audit-trail', \App\Livewire\Admin\AuditTrail::class)->name('stmc.audit.trail');
+
     // Manajemen Karyawan & Pasien
     Route::get('/karyawan/download', [KaryawanController::class, 'downloadExcel'])->name('karyawan.download');
     Route::post('/karyawan/import', [KaryawanController::class, 'importExcel'])->name('karyawan.import');

@@ -1,7 +1,2 @@
-
-
-import Alpine from 'alpinejs';
-
-window.Alpine = Alpine;
-
-Alpine.start();
+// Livewire 3/4 manages and initializes Alpine internally.
+// We avoid calling Alpine.start() here to prevent duplicate Alpine instances that disable wire:click and reactivity.
