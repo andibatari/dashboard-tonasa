@@ -1,186 +1,589 @@
 <x-app-layout>
     <x-slot name="header">
         @if($viewMode === 'employee')
+            <span class="sm:hidden">Portal Karyawan</span>
+            <span class="hidden sm:inline">Beranda Portal Karyawan</span>
+        @else
+            <span class="sm:hidden">Dashboard HC &amp; GRC</span>
+            <span class="hidden sm:inline">Dashboard Internal Dept. HC &amp; GRC</span>
+        @endif
+    </x-slot>
 
-                <!-- 1. HERO EXECUTIVE SECTION (BERSIH, LAPANG & MODERN ALA BUMN FLAGSHIP) -->
-                <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/80 dark:border-slate-800 p-6 sm:p-10 shadow-xs transition-all">
-                    
-                    <!-- Header Atas: Kategori, Sambutan & Selengkapnya -->
-                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start pb-8 border-b border-slate-100 dark:border-slate-800">
-                        
-                        <!-- Kolom Kiri: Eyebrow + Judul Utama -->
-                        <div class="lg:col-span-7 space-y-3">
-                            <div class="flex items-center gap-2">
-                                <span class="text-[11px] font-extrabold uppercase tracking-widest text-[#F5333F] dark:text-red-400">
-                                    PORTAL KARYAWAN SEMEN TONASA (2026)
+    {{-- ======================================================== --}}
+    {{-- CSS ANIMASI UNIK KUSTOM                                  --}}
+    {{-- ======================================================== --}}
+    <style>
+        @keyframes float-slow {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-6px) rotate(0.8deg); }
+        }
+        @keyframes float-reverse {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(6px) rotate(-0.8deg); }
+        }
+        @keyframes pulse-glow {
+            0%, 100% { opacity: 0.6; transform: scale(1); }
+            50% { opacity: 0.9; transform: scale(1.03); }
+        }
+        .anim-float { animation: float-slow 7s ease-in-out infinite; }
+        .anim-float-rev { animation: float-reverse 8s ease-in-out infinite; }
+        .anim-pulse-glow { animation: pulse-glow 5s ease-in-out infinite; }
+    </style>
+
+    <div class="py-4 sm:py-8">
+        <div class="w-full px-2 sm:px-6 lg:px-8 space-y-5 sm:space-y-6">
+
+            {{-- ======================================================== --}}
+            {{-- ALERT NOTIFIKASI SUCCESS / ERROR                         --}}
+            {{-- ======================================================== --}}
+            @if(session('success'))
+                <div x-data="{ show: true }" x-show="show" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 -translate-y-2" x-transition:enter-end="opacity-100 translate-y-0" class="flex items-center justify-between p-4 mb-4 text-sm font-semibold rounded-2xl bg-emerald-50 text-emerald-800 border border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-emerald-800/50 shadow-sm">
+                    <div class="flex items-center gap-3">
+                        <span class="flex items-center justify-center w-8 h-8 rounded-xl bg-emerald-100 text-emerald-600 dark:bg-emerald-900/60 dark:text-emerald-300">
+                            <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        </span>
+                        <span>{{ session('success') }}</span>
+                    </div>
+                    <button type="button" @click="show = false" class="p-1 text-emerald-600 hover:text-emerald-900 dark:hover:text-emerald-200 transition-colors">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path></svg>
+                    </button>
+                </div>
+            @endif
+
+            @if(session('error'))
+                <div x-data="{ show: true }" x-show="show" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 -translate-y-2" x-transition:enter-end="opacity-100 translate-y-0" class="flex items-center justify-between p-4 mb-4 text-sm font-semibold rounded-2xl bg-red-50 text-red-800 border border-red-200 dark:bg-red-950/40 dark:text-red-300 dark:border-red-800/50 shadow-sm">
+                    <div class="flex items-center gap-3">
+                        <span class="flex items-center justify-center w-8 h-8 rounded-xl bg-red-100 text-[#F5333F] dark:bg-red-900/60 dark:text-red-300">
+                            <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                        </span>
+                        <span>{{ session('error') }}</span>
+                    </div>
+                    <button type="button" @click="show = false" class="p-1 text-red-600 hover:text-red-900 dark:hover:text-red-200 transition-colors">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path></svg>
+                    </button>
+                </div>
+            @endif
+
+            {{-- ======================================================== --}}
+            {{-- VIEW SWITCHER (HANYA MUNCUL DI PRATINJAU KARYAWAN UMUM)  --}}
+            {{-- ======================================================== --}}
+            @if($isStaff && $viewMode === 'employee')
+                <div class="flex flex-wrap items-center justify-between gap-3 p-3 bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-2xl shadow-xs transition-all hover:border-slate-300">
+                    <div class="flex items-center gap-2.5 text-xs text-slate-600 dark:text-slate-400">
+                        <span class="flex items-center justify-center w-7 h-7 rounded-lg bg-red-50 dark:bg-red-500/10 text-[#F5333F] anim-pulse-glow">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+                        </span>
+                        <span>Mode Pratinjau Aktif: <strong class="text-slate-900 dark:text-white uppercase font-bold">Portal Karyawan Umum</strong></span>
+                    </div>
+
+                    <a href="{{ route('dashboard', ['view' => 'staff']) }}" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-bold text-white bg-slate-900 hover:bg-slate-800 dark:bg-slate-800 dark:hover:bg-slate-700 rounded-xl transition-all shadow-xs hover:scale-[1.02] active:scale-[0.98]">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M11 17l-5-5m0 0l5-5m-5 5h12"></path></svg>
+                        Kembali ke Dashboard Internal HC
+                    </a>
+                </div>
+            @endif
+
+
+            {{-- ######################################################## --}}
+            {{-- A. TAMPILAN KHUSUS KARYAWAN UMUM (BALANCED & HARMONIOUS) --}}
+            {{-- ######################################################## --}}
+            @if($viewMode === 'employee')
+
+                <!-- 1. EXECUTIVE WELCOME BANNER (BERWIBAWA, ELEGAN & MODERN) -->
+                <div class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-white shadow-xl border border-slate-800/80 group">
+                    <div class="absolute -right-20 -top-20 w-80 h-80 rounded-full bg-[#F5333F]/15 blur-3xl pointer-events-none anim-float"></div>
+                    <div class="absolute right-1/3 -bottom-24 w-72 h-72 rounded-full bg-red-600/10 blur-3xl pointer-events-none anim-float-rev"></div>
+                    <div class="absolute inset-0 bg-[radial-gradient(#ffffff0a_1px,transparent_1px)] [background-size:16px_16px] pointer-events-none"></div>
+
+                    <div class="relative p-5 sm:p-7 flex flex-col md:flex-row md:items-center justify-between gap-5 z-10">
+                        <div class="flex items-center gap-4 sm:gap-5">
+                            
+                            <!-- Avatar Squircle -->
+                            <div class="relative flex-shrink-0">
+                                @if($user->avatar)
+                                    <img src="{{ asset('storage/' . $user->avatar) }}" alt="Avatar" class="w-16 h-16 rounded-2xl object-cover ring-2 ring-white/20 shadow-xl transition-transform duration-300 group-hover:scale-105">
+                                @else
+                                    <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-slate-800 via-slate-900 to-slate-800 text-white font-headline font-black text-2xl flex items-center justify-center ring-2 ring-white/20 shadow-xl border border-white/10">
+                                        <span class="text-transparent bg-clip-text bg-gradient-to-r from-red-400 to-rose-200">
+                                            {{ strtoupper(substr($user->name, 0, 2)) }}
+                                        </span>
+                                    </div>
+                                @endif
+                                <span class="absolute -bottom-1 -right-1 w-3.5 h-3.5 rounded-full bg-emerald-500 border-2 border-slate-950 flex items-center justify-center shadow-sm" title="Online & Terverifikasi">
+                                    <span class="w-1 h-1 rounded-full bg-white animate-ping"></span>
                                 </span>
-                                <span class="text-slate-300 dark:text-slate-700">•</span>
-                                <span class="text-[11px] font-semibold text-slate-500 dark:text-slate-400">
+                            </div>
+
+                            <div class="space-y-1.5">
+                                <div class="flex flex-wrap items-center gap-2">
+                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 text-[10px] font-extrabold uppercase tracking-widest rounded-full bg-red-500/15 text-red-400 border border-red-500/30">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-[#F5333F] animate-pulse"></span>
+                                        Portal Karyawan Semen Tonasa
+                                    </span>
+                                    <span class="px-2.5 py-0.5 text-[10px] font-bold rounded-full bg-white/10 text-slate-300 border border-white/10">
+                                        {{ $user->roles->first()->name ?? 'Karyawan' }}
+                                    </span>
+                                    @if(isset($karyawan) && $karyawan && $karyawan->no_sap)
+                                        <span class="px-2.5 py-0.5 text-[10px] font-mono font-semibold rounded-full bg-white/5 text-slate-300 border border-white/10">
+                                            SAP: {{ $karyawan->no_sap }}
+                                        </span>
+                                    @endif
+                                </div>
+                                <h2 class="text-xl sm:text-2xl font-headline font-black tracking-tight text-white flex items-center gap-2">
+                                    Selamat Datang, {{ $user->name }}!
+                                </h2>
+                                <p class="text-xs text-slate-300 flex flex-wrap items-center gap-x-3 gap-y-1">
+                                    <span class="inline-flex items-center gap-1.5 text-slate-200 font-medium">
+                                        <svg class="w-3.5 h-3.5 text-[#F5333F]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
+                                        {{ $user->unit?->name_unit ?? 'Unit of Business & System Development' }}
+                                    </span>
+                                    <span class="text-slate-600">•</span>
+                                    <span class="inline-flex items-center gap-1.5 text-slate-400">
+                                        <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                                        {{ $user->email }}
+                                    </span>
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Right Side: Kalender & Aksi Cepat Akun -->
+                        <div class="flex items-start md:items-end justify-between md:flex-col gap-3 border-t md:border-t-0 border-white/10 pt-3 md:pt-0">
+                            <div class="text-left md:text-right">
+                                <span class="text-[10px] font-medium text-slate-400 block uppercase tracking-wider">Kalender Kerja:</span>
+                                <span class="text-xs sm:text-sm font-headline font-bold text-white flex items-center gap-1.5 mt-0.5">
+                                    <svg class="w-3.5 h-3.5 text-[#F5333F]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
                                     {{ \Carbon\Carbon::now()->translatedFormat('l, d F Y') }}
                                 </span>
                             </div>
-
-                            <h1 class="text-2xl sm:text-4xl font-extrabold tracking-tight text-slate-900 dark:text-white font-headline leading-tight">
-                                Selamat Datang, {{ $user->name }}
-                            </h1>
-
-                            <div class="flex flex-wrap items-center gap-2.5 pt-1 text-xs text-slate-600 dark:text-slate-400">
-                                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100 dark:bg-slate-800 font-bold text-slate-800 dark:text-slate-200">
-                                    <svg class="w-3.5 h-3.5 text-[#F5333F]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
-                                    {{ $user->unit?->name_unit ?? 'Unit Kerja Semen Tonasa' }}
-                                </span>
-                                @if(isset($karyawan) && $karyawan && $karyawan->no_sap)
-                                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100 dark:bg-slate-800 font-mono font-semibold text-slate-700 dark:text-slate-300">
-                                        SAP: {{ $karyawan->no_sap }}
-                                    </span>
-                                @endif
-                                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300 font-semibold border border-emerald-200/60">
-                                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                                    Status Akun Aktif
-                                </span>
+                            <div class="flex items-center gap-2">
+                                <a href="{{ route('profile.edit') }}" class="px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs font-bold border border-white/15 transition-all shadow-xs flex items-center gap-1.5 hover:scale-[1.02]">
+                                    <svg class="w-3.5 h-3.5 text-slate-300" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                                    <span>Kelola Profil</span>
+                                </a>
+                                <div class="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-500/10 border border-emerald-500/25 text-emerald-300 text-xs font-semibold">
+                                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                                    <span>Aktif</span>
+                                </div>
                             </div>
                         </div>
+                    </div>
+                </div>
 
-                        <!-- Kolom Kanan: Deskripsi Ringkas + Tombol Pill Minimalis -->
-                        <div class="lg:col-span-5 flex flex-col sm:flex-row lg:flex-col justify-between items-start lg:items-end gap-5">
-                            <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed text-left lg:text-right">
-                                Ruang kerja mandiri digital insan PT Semen Tonasa. Akses pendaftaran inovasi mutu (KMST), pantau layanan kesehatan klinik (STMC), dan kelola data profil Anda.
-                            </p>
-
-                            <a href="{{ route('profile.edit') }}" class="inline-flex items-center gap-2.5 px-6 py-2.5 rounded-full border border-slate-300 dark:border-slate-700 hover:border-slate-900 dark:hover:border-white text-xs font-bold text-slate-800 dark:text-slate-200 hover:bg-slate-900 hover:text-white dark:hover:bg-white dark:hover:text-slate-900 transition-all duration-300 shadow-2xs group">
-                                <span>Kelola Profil &amp; Akun</span>
-                                <svg class="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
-                            </a>
+                <!-- 2. QUICK STAT CARDS (4 KOLOM SIMETRIS, LAPANG & MODERN) -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    
+                    <!-- KARTU 1: STATUS KMST INOVASI -->
+                    <div class="p-5 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/80 dark:border-slate-800 shadow-xs hover:border-slate-300 dark:hover:border-slate-700 transition-all flex flex-col justify-between">
+                        <div class="flex items-center justify-between">
+                            <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Inovasi Mutu (KMST)</span>
+                            <span class="w-8 h-8 rounded-xl bg-red-50 text-[#F5333F] dark:bg-red-500/10 flex items-center justify-center">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                            </span>
                         </div>
-
+                        <div class="mt-3">
+                            <div class="text-xl sm:text-2xl font-headline font-black text-slate-900 dark:text-white">
+                                @if($userKmstRegistration)
+                                    {{ $userKmstRegistration->kategori }}
+                                @else
+                                    KMST 2026/27
+                                @endif
+                            </div>
+                            <span class="text-xs text-slate-500 dark:text-slate-400 block mt-0.5 truncate">
+                                @if($userKmstRegistration)
+                                    Terdaftar di Tim: <strong>{{ $userKmstRegistration->nama_tim }}</strong>
+                                @else
+                                    Pendaftaran Terbuka
+                                @endif
+                            </span>
+                        </div>
                     </div>
 
-                    <!-- 2. METRIK INDIKATOR UTAMA (TYPOGRAPHY BESAR & LAPANG SEPERTI PERTAMINA FLAGSHIP) -->
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 pt-8">
-                        
-                        <!-- Metrik 1: Layanan Kesehatan STMC -->
-                        <div class="space-y-2">
-                            <span class="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 block">
-                                LAYANAN KESEHATAN (STMC)
+                    <!-- KARTU 2: LAYANAN KESEHATAN (STMC) -->
+                    <div class="p-5 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/80 dark:border-slate-800 shadow-xs hover:border-slate-300 dark:hover:border-slate-700 transition-all flex flex-col justify-between">
+                        <div class="flex items-center justify-between">
+                            <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Layanan Kesehatan (STMC)</span>
+                            <span class="w-8 h-8 rounded-xl bg-blue-50 text-blue-600 dark:bg-blue-500/10 flex items-center justify-center">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
                             </span>
-                            <div class="text-2xl sm:text-3xl font-headline font-black text-slate-900 dark:text-white tracking-tight">
-                                @if($userMcu)
+                        </div>
+                        <div class="mt-3">
+                            <div class="text-xl sm:text-2xl font-headline font-black text-slate-900 dark:text-white">
+                                @if(isset($userMcu) && $userMcu)
                                     {{ ucfirst($userMcu->status ?? 'Terjadwal') }}
                                 @else
                                     Siap Layanan
                                 @endif
                             </div>
-                            <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
-                                @if($userMcu)
-                                    Jadwal MCU: {{ \Carbon\Carbon::parse($userMcu->tanggal_mcu)->translatedFormat('d F Y') }}
+                            <span class="text-xs text-slate-500 dark:text-slate-400 block mt-0.5 truncate">
+                                @if(isset($userMcu) && $userMcu)
+                                    MCU: {{ \Carbon\Carbon::parse($userMcu->tanggal_mcu)->translatedFormat('d F Y') }}
                                 @else
-                                    Klinik Semen Tonasa Biringere siaga 24 jam untuk keluarga &amp; karyawan.
+                                    Klinik Biringere 24 Jam
                                 @endif
-                            </p>
-                        </div>
-
-                        <!-- Metrik 2: Program Inovasi KMST -->
-                        <div class="space-y-2 md:border-l md:border-slate-100 dark:md:border-slate-800 md:pl-8">
-                            <span class="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 block">
-                                INOVASI MUTU (KMST 2026/2027)
                             </span>
-                            <div class="text-2xl sm:text-3xl font-headline font-black text-slate-900 dark:text-white tracking-tight">
-                                @if($userKmstRegistration)
-                                    {{ $userKmstRegistration->kategori }}
-                                @else
-                                    5 Kategori
-                                @endif
-                            </div>
-                            <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
-                                @if($userKmstRegistration)
-                                    Terdaftar di Tim: <strong class="text-slate-800 dark:text-slate-200">{{ $userKmstRegistration->nama_tim }}</strong>
-                                @else
-                                    Terbuka SS (Office &amp; Plant), GKM, PKM, dan Breakthrough (BI).
-                                @endif
-                            </p>
                         </div>
+                    </div>
 
-                        <!-- Metrik 3: Kepatuhan & Budaya Organisasi -->
-                        <div class="space-y-2 md:border-l md:border-slate-100 dark:md:border-slate-800 md:pl-8">
-                            <span class="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 block">
-                                UNIT KERJA &amp; DEPARTEMEN
+                    <!-- KARTU 3: UNIT KERJA & DEPT -->
+                    <div class="p-5 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/80 dark:border-slate-800 shadow-xs hover:border-slate-300 dark:hover:border-slate-700 transition-all flex flex-col justify-between">
+                        <div class="flex items-center justify-between">
+                            <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Unit Kerja</span>
+                            <span class="w-8 h-8 rounded-xl bg-purple-50 text-purple-600 dark:bg-purple-500/10 flex items-center justify-center">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
                             </span>
-                            <div class="text-2xl sm:text-3xl font-headline font-black text-slate-900 dark:text-white tracking-tight flex items-center gap-2">
-                                <span>{{ $user->unit?->code_unit ?? 'PTST' }}</span>
-                                <span class="text-xs px-2 py-0.5 rounded-md bg-red-50 text-[#F5333F] font-bold border border-red-200/60 font-sans">Tonasa</span>
-                            </div>
-                            <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
-                                {{ $user->unit?->department?->name_department ?? 'PT Semen Tonasa • Holding SIG' }}
-                            </p>
                         </div>
+                        <div class="mt-3">
+                            <div class="text-xl sm:text-2xl font-headline font-black text-slate-900 dark:text-white flex items-center gap-1.5">
+                                BUSDEV
+                                <span class="text-[10px] font-extrabold uppercase px-1.5 py-0.5 rounded bg-red-100 text-[#F5333F] dark:bg-red-900/40 dark:text-red-300">Tonasa</span>
+                            </div>
+                            <span class="text-xs text-slate-500 dark:text-slate-400 block mt-0.5 truncate">
+                                PT Semen Tonasa • Holding SIG
+                            </span>
+                        </div>
+                    </div>
 
+                    <!-- KARTU 4: TEMPLATE RESMI KMST -->
+                    <div class="p-5 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/80 dark:border-slate-800 shadow-xs hover:border-slate-300 dark:hover:border-slate-700 transition-all flex flex-col justify-between">
+                        <div class="flex items-center justify-between">
+                            <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Template Makalah</span>
+                            <span class="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 flex items-center justify-center">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                            </span>
+                        </div>
+                        <div class="mt-3">
+                            <div class="text-xl sm:text-2xl font-headline font-black text-slate-900 dark:text-white">
+                                5 Kategori
+                            </div>
+                            <span class="text-xs text-slate-500 dark:text-slate-400 block mt-0.5 truncate">
+                                Format .docx Resmi KMST
+                            </span>
+                        </div>
                     </div>
 
                 </div>
 
-                <!-- 3. DUA MODUL UTAMA (KMST INOVASI & LAYANAN KESEHATAN STMC) -->
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-stretch">
+                <!-- 3. PROGRAM UNGGULAN INOVASI: KMST 2026/2027 + UNDUH 5 TEMPLATE RESMI -->
+                <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/80 dark:border-slate-800 p-6 sm:p-8 shadow-xs hover:border-slate-300 dark:hover:border-slate-700 transition-all duration-300 space-y-6">
                     
-                    <!-- KARTU 1: PROGRAM INOVASI KMST -->
-                    <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/80 dark:border-slate-800 p-6 sm:p-8 flex flex-col justify-between shadow-xs hover:border-slate-300 dark:hover:border-slate-700 transition-all duration-300">
-                        <div class="space-y-4">
-                            <div class="flex items-center justify-between">
-                                <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-red-50 text-[#F5333F] dark:bg-red-500/10 dark:text-red-400 text-xs font-bold">
-                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 18v-5.25m0 0a6.01 6.01 0 001.5-.189m-1.5.189a6.01 6.01 0 01-1.5-.189m3.75 7.478a12.06 12.06 0 01-4.5 0m3.75 2.383a14.406 14.406 0 01-3 0M14.25 18v-.192c0-.983.658-1.823 1.508-2.316a7.5 7.5 0 10-7.516 0c.85.493 1.509 1.333 1.509 2.316V18"></path></svg>
-                                    KMST Inovasi 2026/2027
+                    <!-- Header Kartu KMST & Tombol Aksi -->
+                    <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-5 pb-5 border-b border-slate-100 dark:border-slate-800">
+                        <div class="space-y-1.5">
+                            <div class="flex items-center gap-2">
+                                <span class="px-2.5 py-0.5 text-[10px] font-black uppercase tracking-wider rounded-md bg-red-50 text-[#F5333F] dark:bg-red-500/10 border border-red-200/60 dark:border-red-800/40">
+                                    PROGRAM UNGGULAN INOVASI
                                 </span>
-                                @if($userKmstRegistration)
-                                    <span class="text-xs font-bold text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5">
-                                        <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
-                                        Sudah Mendaftar
-                                    </span>
-                                @else
-                                    <span class="text-xs font-medium text-slate-400">Pendaftaran Terbuka</span>
-                                @endif
+                                <span class="text-xs text-slate-400 font-semibold">• KMST 2026/2027</span>
                             </div>
-
-                            <h3 class="text-xl font-headline font-bold text-slate-900 dark:text-white">
-                                Konvensi Mutu Semen Tonasa (KMST)
+                            <h3 class="text-xl sm:text-2xl font-headline font-bold text-slate-900 dark:text-white">
+                                Konvensi Mutu Semen Tonasa (KMST) 2026 – 2027
                             </h3>
-
-                            <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
-                                Kirimkan gagasan dan karya inovasi tim Anda untuk efisiensi operasional dan keandalan pabrik. Unduh template makalah resmi:
+                            <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-400 max-w-3xl leading-relaxed">
+                                Salurkan gagasan dan inovasi terbaik Anda untuk mewujudkan efisiensi biaya, produktivitas optimal, dan keselamatan kerja di PT Semen Tonasa. Terbuka dalam 5 Kategori Resmi: SS (Office), SS (Plant), GKM, PKM, dan BI.
                             </p>
-
-                            <!-- Unduh Template Singkat & Bersih -->
-                            <div class="flex flex-wrap gap-2 pt-1">
-                                <a href="{{ route('inovasi.download-template', ['kategori' => 'SS_Office']) }}" class="px-3 py-1.5 rounded-xl bg-slate-50 hover:bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-semibold border border-slate-200/70 dark:border-slate-700 transition">
-                                    📄 SS (Office)
-                                </a>
-                                <a href="{{ route('inovasi.download-template', ['kategori' => 'SS_Plant']) }}" class="px-3 py-1.5 rounded-xl bg-slate-50 hover:bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-semibold border border-slate-200/70 dark:border-slate-700 transition">
-                                    📄 SS (Plant)
-                                </a>
-                                <a href="{{ route('inovasi.download-template', ['kategori' => 'GKM']) }}" class="px-3 py-1.5 rounded-xl bg-slate-50 hover:bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-semibold border border-slate-200/70 dark:border-slate-700 transition">
-                                    📄 GKM
-                                </a>
-                                <a href="{{ route('inovasi.download-template', ['kategori' => 'PKM']) }}" class="px-3 py-1.5 rounded-xl bg-slate-50 hover:bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-semibold border border-slate-200/70 dark:border-slate-700 transition">
-                                    📄 PKM
-                                </a>
-                                <a href="{{ route('inovasi.download-template', ['kategori' => 'BI']) }}" class="px-3 py-1.5 rounded-xl bg-slate-50 hover:bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-semibold border border-slate-200/70 dark:border-slate-700 transition">
-                                    📄 BI
-                                </a>
-                            </div>
                         </div>
 
-                        <!-- Aksi Tombol KMST -->
-                        <div class="pt-6 mt-6 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between gap-3">
-                            <a href="{{ route('inovasi.portal') }}" class="text-xs font-bold text-[#F5333F] hover:text-red-700 transition flex items-center gap-1.5">
-                                <span>Buka Halaman Inovasi</span>
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path></svg>
+                        <!-- Tombol Aksi KMST -->
+                        <div class="flex items-center gap-2.5 flex-shrink-0">
+                            <a href="{{ route('inovasi.portal') }}" class="px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200/80 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 text-xs font-bold transition flex items-center gap-1.5 shadow-2xs">
+                                <span>Buka Portal Inovasi</span>
+                                <svg class="w-3.5 h-3.5 text-[#F5333F]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path></svg>
                             </a>
-                            <a href="{{ route('inovasi.portal') }}#daftar" class="px-4 py-2 rounded-xl bg-[#F5333F] hover:bg-red-600 text-white text-xs font-bold transition shadow-sm">
-                                Formulir Pendaftaran
+                            <a href="{{ route('inovasi.portal') }}#daftar" class="px-5 py-2.5 rounded-xl bg-[#F5333F] hover:bg-red-600 text-white text-xs font-bold transition shadow-sm hover:scale-[1.02] active:scale-[0.98] flex items-center gap-1.5">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"></path></svg>
+                                <span>Formulir Pendaftaran</span>
                             </a>
                         </div>
                     </div>
 
-                    <!-- KARTU 2: LAYANAN KESEHATAN KLINIK STMC -->
-                    <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/80 dark:border-slate-800 p-6 sm:p-8 flex flex-col justify-between shadow-xs hover:border-slate-300 dark:hover:border-slate-700 transition-all duration-300">
+                    <!-- Status Pendaftaran Karyawan Terkini -->
+                    @if($userKmstRegistration)
+                        <div class="p-4 rounded-2xl bg-emerald-50/80 dark:bg-emerald-950/30 border border-emerald-200/80 dark:border-emerald-800/50 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+                            <div class="flex items-center gap-3">
+                                <div class="w-8 h-8 rounded-xl bg-emerald-100 dark:bg-emerald-900/50 text-emerald-600 dark:text-emerald-300 flex items-center justify-center shrink-0">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg>
+                                </div>
+                                <div>
+                                    <span class="font-bold text-emerald-900 dark:text-emerald-200 block">Status Pendaftaran: Anda Sudah Terdaftar di KMST!</span>
+                                    <span class="text-emerald-700 dark:text-emerald-300">Tim: <strong class="text-slate-900 dark:text-white">{{ $userKmstRegistration->nama_tim }}</strong> • Kategori: <strong class="px-1.5 py-0.5 rounded bg-emerald-200/60 dark:bg-emerald-900/60">{{ $userKmstRegistration->kategori }}</strong></span>
+                                </div>
+                            </div>
+                            <a href="{{ route('inovasi.portal') }}" class="font-bold text-emerald-800 dark:text-emerald-300 hover:underline flex items-center gap-1">
+                                <span>Lihat Rincian Tim</span>
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path></svg>
+                            </a>
+                        </div>
+                    @else
+                        <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200/60 dark:border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs text-slate-600 dark:text-slate-300">
+                            <div class="flex items-center gap-3">
+                                <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse shrink-0"></span>
+                                <span>Pendaftaran KMST Inovasi Terbuka untuk seluruh insan PT Semen Tonasa. Bentuk tim atau daftarkan ide individu Anda.</span>
+                            </div>
+                            <span class="font-bold text-[#F5333F]">Periode 2026/2027</span>
+                        </div>
+                    @endif
+
+                    <!-- Bagian Unduh 5 Template Makalah Resmi -->
+                    <div class="space-y-3 pt-2">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
+                                <svg class="w-4 h-4 text-[#F5333F]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                                Template Resmi Makalah (Format .docx Resmi):
+                            </span>
+                            <a href="{{ route('inovasi.portal') }}#panduan" class="text-xs font-bold text-[#F5333F] hover:underline flex items-center gap-1">
+                                <span>Panduan Format KMST</span>
+                                <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path></svg>
+                            </a>
+                        </div>
+
+                        <!-- Grid 5 Kolom Tombol Unduh Template -->
+                        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+                            
+                            <!-- 1. SS OFFICE -->
+                            <a href="{{ route('inovasi.download-template', ['kategori' => 'SS_Office']) }}" class="group p-3 rounded-2xl bg-slate-50 hover:bg-white dark:bg-slate-800/50 dark:hover:bg-slate-800 border border-slate-200/80 hover:border-red-300 dark:border-slate-800 dark:hover:border-red-900/50 shadow-2xs hover:shadow-md transition-all hover:-translate-y-0.5 flex items-center gap-2.5">
+                                <span class="w-8 h-8 rounded-xl bg-red-50 text-[#F5333F] dark:bg-red-500/10 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                                </span>
+                                <div class="min-w-0 flex-1">
+                                    <span class="text-xs font-bold text-slate-800 dark:text-slate-200 block truncate group-hover:text-[#F5333F] transition-colors">SS (Office)</span>
+                                    <span class="text-[10px] text-slate-400 block">Format .docx</span>
+                                </div>
+                                <svg class="w-3.5 h-3.5 text-slate-300 group-hover:text-[#F5333F] transition-colors shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path></svg>
+                            </a>
+
+                            <!-- 2. SS PLANT -->
+                            <a href="{{ route('inovasi.download-template', ['kategori' => 'SS_Plant']) }}" class="group p-3 rounded-2xl bg-slate-50 hover:bg-white dark:bg-slate-800/50 dark:hover:bg-slate-800 border border-slate-200/80 hover:border-red-300 dark:border-slate-800 dark:hover:border-red-900/50 shadow-2xs hover:shadow-md transition-all hover:-translate-y-0.5 flex items-center gap-2.5">
+                                <span class="w-8 h-8 rounded-xl bg-red-50 text-[#F5333F] dark:bg-red-500/10 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                                </span>
+                                <div class="min-w-0 flex-1">
+                                    <span class="text-xs font-bold text-slate-800 dark:text-slate-200 block truncate group-hover:text-[#F5333F] transition-colors">SS (Plant)</span>
+                                    <span class="text-[10px] text-slate-400 block">Format .docx</span>
+                                </div>
+                                <svg class="w-3.5 h-3.5 text-slate-300 group-hover:text-[#F5333F] transition-colors shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path></svg>
+                            </a>
+
+                            <!-- 3. GKM -->
+                            <a href="{{ route('inovasi.download-template', ['kategori' => 'GKM']) }}" class="group p-3 rounded-2xl bg-slate-50 hover:bg-white dark:bg-slate-800/50 dark:hover:bg-slate-800 border border-slate-200/80 hover:border-red-300 dark:border-slate-800 dark:hover:border-red-900/50 shadow-2xs hover:shadow-md transition-all hover:-translate-y-0.5 flex items-center gap-2.5">
+                                <span class="w-8 h-8 rounded-xl bg-red-50 text-[#F5333F] dark:bg-red-500/10 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                                </span>
+                                <div class="min-w-0 flex-1">
+                                    <span class="text-xs font-bold text-slate-800 dark:text-slate-200 block truncate group-hover:text-[#F5333F] transition-colors">GKM</span>
+                                    <span class="text-[10px] text-slate-400 block">Gugus Mutu</span>
+                                </div>
+                                <svg class="w-3.5 h-3.5 text-slate-300 group-hover:text-[#F5333F] transition-colors shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path></svg>
+                            </a>
+
+                            <!-- 4. PKM -->
+                            <a href="{{ route('inovasi.download-template', ['kategori' => 'PKM']) }}" class="group p-3 rounded-2xl bg-slate-50 hover:bg-white dark:bg-slate-800/50 dark:hover:bg-slate-800 border border-slate-200/80 hover:border-red-300 dark:border-slate-800 dark:hover:border-red-900/50 shadow-2xs hover:shadow-md transition-all hover:-translate-y-0.5 flex items-center gap-2.5">
+                                <span class="w-8 h-8 rounded-xl bg-red-50 text-[#F5333F] dark:bg-red-500/10 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                                </span>
+                                <div class="min-w-0 flex-1">
+                                    <span class="text-xs font-bold text-slate-800 dark:text-slate-200 block truncate group-hover:text-[#F5333F] transition-colors">PKM</span>
+                                    <span class="text-[10px] text-slate-400 block">Proyek Mutu</span>
+                                </div>
+                                <svg class="w-3.5 h-3.5 text-slate-300 group-hover:text-[#F5333F] transition-colors shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path></svg>
+                            </a>
+
+                            <!-- 5. BI (BREAKTHROUGH) -->
+                            <a href="{{ route('inovasi.download-template', ['kategori' => 'BI']) }}" class="group p-3 rounded-2xl bg-slate-50 hover:bg-white dark:bg-slate-800/50 dark:hover:bg-slate-800 border border-slate-200/80 hover:border-red-300 dark:border-slate-800 dark:hover:border-red-900/50 shadow-2xs hover:shadow-md transition-all hover:-translate-y-0.5 flex items-center gap-2.5 col-span-2 sm:col-span-1">
+                                <span class="w-8 h-8 rounded-xl bg-red-50 text-[#F5333F] dark:bg-red-500/10 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                                </span>
+                                <div class="min-w-0 flex-1">
+                                    <span class="text-xs font-bold text-slate-800 dark:text-slate-200 block truncate group-hover:text-[#F5333F] transition-colors">BI</span>
+                                    <span class="text-[10px] text-slate-400 block">Breakthrough</span>
+                                </div>
+                                <svg class="w-3.5 h-3.5 text-slate-300 group-hover:text-[#F5333F] transition-colors shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path></svg>
+                            </a>
+
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- 4. HALL OF FAME: GALERI PRESTASI JUARA INOVASI SEMEN TONASA (MEWAH & SEJAJAR 4 KOLOM) -->
+                <div class="space-y-4">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 text-[10px] font-extrabold uppercase tracking-wider rounded-full bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-xs">
+                                    <svg class="w-3 h-3 text-amber-400" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2l2.4 5.6L20 10l-4.2 3.8 1.2 5.8-5-3-5 3 1.2-5.8L4 10l5.6-2.4L12 2z"/></svg>
+                                    Hall of Fame Inovasi
+                                </span>
+                                <span class="text-xs text-slate-500 dark:text-slate-400 font-semibold">• Prestasi Bergengsi Nasional &amp; Internasional</span>
+                            </div>
+                            <h3 class="text-lg sm:text-xl font-headline font-black text-slate-900 dark:text-white mt-1">
+                                Galeri Prestasi Juara Inovasi PT Semen Tonasa
+                            </h3>
+                        </div>
+                        <a href="{{ route('inovasi.portal') }}#galeri" class="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-bold rounded-xl text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700/80 border border-slate-200/80 dark:border-slate-700 shadow-2xs transition-all hover:scale-[1.02] active:scale-[0.98] self-start sm:self-auto">
+                            <span>Jelajahi Portal Inovasi</span>
+                            <svg class="w-3.5 h-3.5 text-[#F5333F]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path></svg>
+                        </a>
+                    </div>
+
+                    <!-- 4 Kartu Prestasi Berkelas (Grid 4 Kolom di Layar Lebar) -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                        
+                        <!-- CARD 1: BI (TKMPN Bali) -->
+                        <div class="group relative flex flex-col justify-between bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/80 dark:border-slate-800 shadow-xs hover:shadow-xl hover:border-slate-300 dark:hover:border-slate-700 hover:-translate-y-1 transition-all duration-300 overflow-hidden">
+                            <div>
+                                <div class="relative aspect-[16/10] overflow-hidden bg-slate-950">
+                                    <img src="https://images.unsplash.com/photo-1542744173-8e7e53415bb0?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Juara 1 TKMPN Bali" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 opacity-90 group-hover:opacity-100">
+                                    <div class="absolute inset-0 bg-gradient-to-t from-slate-950/85 via-slate-950/20 to-transparent"></div>
+                                    <span class="absolute top-3 left-3 inline-flex items-center gap-1.5 px-2.5 py-1 text-[10px] font-bold rounded-lg backdrop-blur-md bg-slate-950/75 border border-white/15 text-white uppercase tracking-wider shadow-md">
+                                        <svg class="w-3 h-3 text-amber-400" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2l2.4 5.6L20 10l-4.2 3.8 1.2 5.8-5-3-5 3 1.2-5.8L4 10l5.6-2.4L12 2z"/></svg>
+                                        Juara 1 TKMPN
+                                    </span>
+                                    <span class="absolute bottom-2.5 right-3 text-[10px] font-bold text-slate-300 bg-slate-900/80 backdrop-blur-sm px-2 py-0.5 rounded border border-white/10">
+                                        Pentas Nasional
+                                    </span>
+                                </div>
+                                <div class="p-4 space-y-2">
+                                    <div class="flex items-center justify-between gap-2">
+                                        <span class="px-2 py-0.5 text-[9px] font-black rounded-md bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 uppercase border border-slate-200/60 dark:border-slate-700/60">
+                                            BI (Breakthrough)
+                                        </span>
+                                        <span class="text-[10px] text-slate-400 font-medium">Tingkat Nasional</span>
+                                    </div>
+                                    <h4 class="text-sm font-headline font-bold text-slate-900 dark:text-white group-hover:text-[#F5333F] transition-colors line-clamp-2 leading-snug">
+                                        Optimalisasi Raw Mill &amp; Green Clinker
+                                    </h4>
+                                    <p class="text-xs text-slate-500 dark:text-slate-400 line-clamp-2 leading-relaxed">
+                                        Inovasi pembakaran alternatif ramah lingkungan dan reduksi emisi thermal pabrik.
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="p-4 pt-0">
+                                <div class="pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-[11px]">
+                                    <span class="text-slate-500 dark:text-slate-400 truncate max-w-[120px] font-medium">Tim Breakthrough</span>
+                                    <span class="font-extrabold text-slate-900 dark:text-white bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded-md border border-slate-200/60 dark:border-slate-700/60">💰 Rp 2.4 M</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- CARD 2: GKM (ICQCC Internasional) -->
+                        <div class="group relative flex flex-col justify-between bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/80 dark:border-slate-800 shadow-xs hover:shadow-xl hover:border-slate-300 dark:hover:border-slate-700 hover:-translate-y-1 transition-all duration-300 overflow-hidden">
+                            <div>
+                                <div class="relative aspect-[16/10] overflow-hidden bg-slate-950">
+                                    <img src="https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Platinum Award ICQCC" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 opacity-90 group-hover:opacity-100">
+                                    <div class="absolute inset-0 bg-gradient-to-t from-slate-950/85 via-slate-950/20 to-transparent"></div>
+                                    <span class="absolute top-3 left-3 inline-flex items-center gap-1.5 px-2.5 py-1 text-[10px] font-bold rounded-lg backdrop-blur-md bg-slate-950/75 border border-white/15 text-white uppercase tracking-wider shadow-md">
+                                        <svg class="w-3 h-3 text-cyan-400" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2l2.4 5.6L20 10l-4.2 3.8 1.2 5.8-5-3-5 3 1.2-5.8L4 10l5.6-2.4L12 2z"/></svg>
+                                        Platinum ICQCC
+                                    </span>
+                                    <span class="absolute bottom-2.5 right-3 text-[10px] font-bold text-slate-300 bg-slate-900/80 backdrop-blur-sm px-2 py-0.5 rounded border border-white/10">
+                                        Pentas Dunia
+                                    </span>
+                                </div>
+                                <div class="p-4 space-y-2">
+                                    <div class="flex items-center justify-between gap-2">
+                                        <span class="px-2 py-0.5 text-[9px] font-black rounded-md bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 uppercase border border-slate-200/60 dark:border-slate-700/60">
+                                            GKM (Gugus Mutu)
+                                        </span>
+                                        <span class="text-[10px] text-slate-400 font-medium">Internasional</span>
+                                    </div>
+                                    <h4 class="text-sm font-headline font-bold text-slate-900 dark:text-white group-hover:text-[#F5333F] transition-colors line-clamp-2 leading-snug">
+                                        AI Predictive Maintenance Kiln 4
+                                    </h4>
+                                    <p class="text-xs text-slate-500 dark:text-slate-400 line-clamp-2 leading-relaxed">
+                                        Penerapan machine learning deteksi dini anomali vibrasi motor raw mill dan kiln pabrik.
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="p-4 pt-0">
+                                <div class="pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-[11px]">
+                                    <span class="text-slate-500 dark:text-slate-400 truncate max-w-[120px] font-medium">Tim GKM Digital</span>
+                                    <span class="font-extrabold text-slate-900 dark:text-white bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded-md border border-slate-200/60 dark:border-slate-700/60">⏱️ Zero Stop</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- CARD 3: PKM (Inovasi Holding SIG) -->
+                        <div class="group relative flex flex-col justify-between bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/80 dark:border-slate-800 shadow-xs hover:shadow-xl hover:border-slate-300 dark:hover:border-slate-700 hover:-translate-y-1 transition-all duration-300 overflow-hidden">
+                            <div>
+                                <div class="relative aspect-[16/10] overflow-hidden bg-slate-950">
+                                    <img src="https://images.unsplash.com/photo-1504384308090-c894fdcc538d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Gold Award SIG Group" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 opacity-90 group-hover:opacity-100">
+                                    <div class="absolute inset-0 bg-gradient-to-t from-slate-950/85 via-slate-950/20 to-transparent"></div>
+                                    <span class="absolute top-3 left-3 inline-flex items-center gap-1.5 px-2.5 py-1 text-[10px] font-bold rounded-lg backdrop-blur-md bg-slate-950/75 border border-white/15 text-white uppercase tracking-wider shadow-md">
+                                        <svg class="w-3 h-3 text-amber-400" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2l2.4 5.6L20 10l-4.2 3.8 1.2 5.8-5-3-5 3 1.2-5.8L4 10l5.6-2.4L12 2z"/></svg>
+                                        Gold Award SIG
+                                    </span>
+                                    <span class="absolute bottom-2.5 right-3 text-[10px] font-bold text-slate-300 bg-slate-900/80 backdrop-blur-sm px-2 py-0.5 rounded border border-white/10">
+                                        Holding SIG
+                                    </span>
+                                </div>
+                                <div class="p-4 space-y-2">
+                                    <div class="flex items-center justify-between gap-2">
+                                        <span class="px-2 py-0.5 text-[9px] font-black rounded-md bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 uppercase border border-slate-200/60 dark:border-slate-700/60">
+                                            PKM (Proyek Mutu)
+                                        </span>
+                                        <span class="text-[10px] text-slate-400 font-medium">Grup Semen</span>
+                                    </div>
+                                    <h4 class="text-sm font-headline font-bold text-slate-900 dark:text-white group-hover:text-[#F5333F] transition-colors line-clamp-2 leading-snug">
+                                        Digital Blending Limestone IoT
+                                    </h4>
+                                    <p class="text-xs text-slate-500 dark:text-slate-400 line-clamp-2 leading-relaxed">
+                                        Sensor optik dan tracking armada tambang untuk konsistensi komposisi feed kiln.
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="p-4 pt-0">
+                                <div class="pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-[11px]">
+                                    <span class="text-slate-500 dark:text-slate-400 truncate max-w-[120px] font-medium">Tim PKM Tambang</span>
+                                    <span class="font-extrabold text-slate-900 dark:text-white bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded-md border border-slate-200/60 dark:border-slate-700/60">🎯 Akurasi 99%</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- CARD 4: SS PLANT (Best SS Tonasa) -->
+                        <div class="group relative flex flex-col justify-between bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/80 dark:border-slate-800 shadow-xs hover:shadow-xl hover:border-slate-300 dark:hover:border-slate-700 hover:-translate-y-1 transition-all duration-300 overflow-hidden">
+                            <div>
+                                <div class="relative aspect-[16/10] overflow-hidden bg-slate-950">
+                                    <img src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Best SS Plant Tonasa" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 opacity-90 group-hover:opacity-100">
+                                    <div class="absolute inset-0 bg-gradient-to-t from-slate-950/85 via-slate-950/20 to-transparent"></div>
+                                    <span class="absolute top-3 left-3 inline-flex items-center gap-1.5 px-2.5 py-1 text-[10px] font-bold rounded-lg backdrop-blur-md bg-slate-950/75 border border-white/15 text-white uppercase tracking-wider shadow-md">
+                                        <svg class="w-3 h-3 text-amber-400" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2l2.4 5.6L20 10l-4.2 3.8 1.2 5.8-5-3-5 3 1.2-5.8L4 10l5.6-2.4L12 2z"/></svg>
+                                        Best SS Plant
+                                    </span>
+                                    <span class="absolute bottom-2.5 right-3 text-[10px] font-bold text-slate-300 bg-slate-900/80 backdrop-blur-sm px-2 py-0.5 rounded border border-white/10">
+                                        Pabrik Tonasa
+                                    </span>
+                                </div>
+                                <div class="p-4 space-y-2">
+                                    <div class="flex items-center justify-between gap-2">
+                                        <span class="px-2 py-0.5 text-[9px] font-black rounded-md bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 uppercase border border-slate-200/60 dark:border-slate-700/60">
+                                            SS (Plant)
+                                        </span>
+                                        <span class="text-[10px] text-slate-400 font-medium">Internal Tonasa</span>
+                                    </div>
+                                    <h4 class="text-sm font-headline font-bold text-slate-900 dark:text-white group-hover:text-[#F5333F] transition-colors line-clamp-2 leading-snug">
+                                        Quick-Release Silo Nozzle Pack
+                                    </h4>
+                                    <p class="text-xs text-slate-500 dark:text-slate-400 line-clamp-2 leading-relaxed">
+                                        Rancang bangun nozzle fleksibel mempercepat proses loading armada curah dan packing.
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="p-4 pt-0">
+                                <div class="pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-[11px]">
+                                    <span class="text-slate-500 dark:text-slate-400 truncate max-w-[120px] font-medium">Inovator Distribusi</span>
+                                    <span class="font-extrabold text-slate-900 dark:text-white bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded-md border border-slate-200/60 dark:border-slate-700/60">⏱️ Zero Delay</span>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- 5. DUA MODUL LAYANAN MANDIRI TERPADU (GRID 2 KOLOM SEIMBANG 50:50) -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+                    
+                    <!-- KARTU KIRI: LAYANAN KESEHATAN KLINIK STMC -->
+                    <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/80 dark:border-slate-800 p-6 sm:p-7 flex flex-col justify-between shadow-xs hover:border-slate-300 dark:hover:border-slate-700 transition-all duration-300 space-y-5">
                         <div class="space-y-4">
                             <div class="flex items-center justify-between">
                                 <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 text-blue-700 dark:bg-blue-500/10 dark:text-blue-400 text-xs font-bold">
@@ -190,57 +593,97 @@
                                 <span class="text-xs font-medium text-slate-400">Klinik Biringere 24 Jam</span>
                             </div>
 
-                            <h3 class="text-xl font-headline font-bold text-slate-900 dark:text-white">
-                                Semen Tonasa Medical Centre (STMC)
-                            </h3>
+                            <div>
+                                <h3 class="text-lg sm:text-xl font-headline font-bold text-slate-900 dark:text-white">
+                                    Semen Tonasa Medical Centre (STMC)
+                                </h3>
+                                <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-400 mt-1 leading-relaxed">
+                                    Fasilitas pemantauan kesehatan berkala (MCU), jadwal praktik dokter, konsultasi rawat jalan, dan aplikasi mobile STMC Health.
+                                </p>
+                            </div>
 
-                            <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
-                                Fasilitas pemantauan kesehatan berkala (MCU), jadwal praktik dokter, konsultasi rawat jalan, dan aplikasi mobile STMC Health.
-                            </p>
-
-                            <!-- Status MCU Mini Box -->
+                            <!-- Status MCU Karyawan Safe Check -->
                             <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800 flex items-center justify-between">
                                 <div class="space-y-0.5">
                                     <span class="text-[10px] uppercase font-bold text-slate-400 block">Jadwal MCU Tahunan Anda</span>
                                     <span class="text-xs font-bold text-slate-800 dark:text-slate-200">
-                                        @if($userMcu)
+                                        @if(isset($userMcu) && $userMcu)
                                             Tanggal: {{ \Carbon\Carbon::parse($userMcu->tanggal_mcu)->translatedFormat('d F Y') }} (Poli Umum)
                                         @else
                                             Belum ada jadwal MCU aktif periode ini
                                         @endif
                                     </span>
                                 </div>
-                                <span class="text-xs font-bold text-[#F5333F] bg-white dark:bg-slate-800 px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700">
+                                <span class="text-xs font-bold text-[#F5333F] bg-white dark:bg-slate-800 px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 shadow-2xs">
                                     STMC Mobile Ready
                                 </span>
                             </div>
                         </div>
 
-                        <!-- Aksi Tombol STMC -->
-                        <div class="pt-6 mt-6 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between gap-3">
-                            <span class="text-xs text-slate-500 dark:text-slate-400">
-                                Butuh darurat? Ext: <strong>1234</strong>
-                            </span>
-                            <span class="px-4 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-bold">
+                        <!-- Footer STMC -->
+                        <div class="pt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
+                            <span>Butuh darurat medis? Ext: <strong class="text-slate-900 dark:text-white">1234</strong></span>
+                            <span class="px-3 py-1 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-bold">
                                 Biringere • Pangkep
                             </span>
                         </div>
                     </div>
 
+                    <!-- KARTU KANAN: TATA KELOLA ICOFR & BUDAYA KERJA AKHLAK -->
+                    <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/80 dark:border-slate-800 p-6 sm:p-7 flex flex-col justify-between shadow-xs hover:border-slate-300 dark:hover:border-slate-700 transition-all duration-300 space-y-5">
+                        <div class="space-y-4">
+                            <div class="flex items-center justify-between">
+                                <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300 text-xs font-bold">
+                                    <svg class="w-3.5 h-3.5 text-emerald-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+                                    Tata Kelola &amp; Kepatuhan
+                                </span>
+                                <span class="text-xs font-medium text-slate-400">Standar SIG &amp; BUMN</span>
+                            </div>
+
+                            <div>
+                                <h3 class="text-lg sm:text-xl font-headline font-bold text-slate-900 dark:text-white">
+                                    Pengendalian Internal (ICoFR) &amp; Nilai AKHLAK
+                                </h3>
+                                <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-400 mt-1 leading-relaxed">
+                                    Penerapan matriks risiko &amp; kontrol (RCM) serta penanaman 6 nilai inti insan Semen Tonasa dalam setiap proses bisnis operasional.
+                                </p>
+                            </div>
+
+                            <!-- 6 Nilai AKHLAK Pills -->
+                            <div class="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800 space-y-2">
+                                <span class="text-[10px] font-black uppercase tracking-wider text-slate-400 block">Pilar Budaya Kerja BUMN (AKHLAK):</span>
+                                <div class="flex flex-wrap gap-1.5 text-xs font-bold">
+                                    <span class="px-2.5 py-1 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 shadow-2xs">Amanah</span>
+                                    <span class="px-2.5 py-1 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 shadow-2xs">Kompeten</span>
+                                    <span class="px-2.5 py-1 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 shadow-2xs">Harmonis</span>
+                                    <span class="px-2.5 py-1 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 shadow-2xs">Loyal</span>
+                                    <span class="px-2.5 py-1 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 shadow-2xs">Adaptif</span>
+                                    <span class="px-2.5 py-1 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 shadow-2xs">Kolaboratif</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Footer Helpdesk -->
+                        <div class="pt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
+                            <span>Helpdesk: <strong class="text-slate-900 dark:text-white">hc.service@sementonasa.co.id</strong></span>
+                            <span class="text-slate-500">Ext: <strong>5678</strong></span>
+                        </div>
+                    </div>
+
                 </div>
 
-                <!-- 4. FOOTNOTE BANTUAN & INFORMASI RESMI -->
-                <div class="p-6 rounded-3xl bg-slate-50 dark:bg-slate-900/50 border border-slate-200/60 dark:border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500 dark:text-slate-400">
+                <!-- 6. FOOTNOTE RESMI DENGAN INFORMASI OPERASIONAL -->
+                <div class="p-5 rounded-3xl bg-slate-50 dark:bg-slate-900/50 border border-slate-200/60 dark:border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500 dark:text-slate-400">
                     <div class="flex items-center gap-3">
                         <div class="w-8 h-8 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-600 dark:text-slate-300 shrink-0">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                         </div>
-                        <span>Butuh bantuan terkait akun atau sistem informasi? Hubungi Helpdesk Dept. HC &amp; Services Semen Tonasa.</span>
+                        <span>Butuh bantuan terkait akun atau sistem informasi? Hubungi Helpdesk Dept. HC &amp; Services PT Semen Tonasa.</span>
                     </div>
                     <span class="font-semibold text-slate-700 dark:text-slate-300">Senin - Jumat (08.00 - 16.30 WITA)</span>
                 </div>
 
-            {{-- B. TAMPILAN KHUSUS STAF DEPT. HC & GRC (OPERATIONAL)     --}}
+{{-- B. TAMPILAN KHUSUS STAF DEPT. HC & GRC (OPERATIONAL)     --}}
             {{-- ######################################################## --}}
             @else
 
