@@ -54,7 +54,19 @@ class DashboardController extends Controller
             }
         }
 
-        // 3. Statistik khusus untuk Staf Internal Dept. HC & GRC
+        // 3. Status Kesehatan MCU Karyawan Terkait
+        $karyawan = \App\Models\Karyawan::where('email', $user->email)
+            ->orWhere('nama_karyawan', $user->name)
+            ->first();
+
+        $userMcu = null;
+        if ($karyawan) {
+            $userMcu = \App\Models\JadwalMcu::where('karyawans_id', $karyawan->id)
+                ->latest()
+                ->first();
+        }
+
+        // 4. Statistik khusus untuk Staf Internal Dept. HC & GRC
         $staffStats = [];
         if ($isStaff) {
             $staffStats = [
@@ -74,6 +86,8 @@ class DashboardController extends Controller
 
         return view('dashboard', [
             'user'                 => $user,
+            'karyawan'             => $karyawan,
+            'userMcu'              => $userMcu,
             'isStaff'              => $isStaff,
             'viewMode'             => $viewMode,
             'isKmstActive'         => $isKmstActive,
