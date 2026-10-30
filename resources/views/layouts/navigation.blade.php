@@ -41,21 +41,29 @@
         <!-- ========================================== -->
         <!-- MENU KHUSUS KARYAWAN UMUM (Role: User) -->
         <!-- ========================================== -->
-        <div class="pt-5 pb-2 px-3">
-            <span x-show="sidebarOpen || window.innerWidth < 1024" class="text-[10px] font-bold tracking-widest text-gray-400 dark:text-gray-500 uppercase">Layanan Karyawan</span>
-        </div>
-
         @php
-            // Mengecek langsung ke database apakah nilai toggle KMST bernilai '1'
-            $settingKmst = \App\Models\Setting::where('key', 'kmst_event_active')->first();
-            $isKmstActive = $settingKmst ? ($settingKmst->value === '1') : false;
+            $currentUser = Auth::user();
+            // Sembunyikan bagian Layanan Karyawan jika login sebagai Admin STMC murni (agar sidebar fokus pada tugas medis STMC)
+            $hideKaryawanMenu = $currentUser && $currentUser->hasRole('Admin STMC') && ! $currentUser->hasAnyRole(['Developer', 'Super Admin', 'Admin Busdev']);
         @endphp
 
-        @if($isKmstActive)
-            <a href="{{ route('inovasi.portal') }}" class="relative flex items-center px-3 py-2.5 rounded-xl group transition-all duration-200 {{ request()->routeIs('inovasi.*') ? 'bg-red-50 dark:bg-[#F5333F]/10 text-[#F5333F] font-semibold' : 'text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800/40 hover:text-gray-900 dark:hover:text-white' }}">
-                <svg class="w-5 h-5 {{ request()->routeIs('inovasi.*') ? 'text-[#F5333F]' : 'text-gray-400 dark:text-gray-500 group-hover:text-gray-900 dark:group-hover:text-white transition-colors' }}" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 18v-5.25m0 0a6.01 6.01 0 001.5-.189m-1.5.189a6.01 6.01 0 01-1.5-.189m3.75 7.478a12.06 12.06 0 01-4.5 0m3.75 2.383a14.406 14.406 0 01-3 0M14.25 18v-.192c0-.983.658-1.823 1.508-2.316a7.5 7.5 0 10-7.516 0c.85.493 1.509 1.333 1.509 2.316V18"></path></svg>
-                <span x-show="sidebarOpen || window.innerWidth < 1024" class="ml-3 text-[13.5px] font-medium whitespace-nowrap">KMST Inovasi</span>
-            </a>
+        @if(! $hideKaryawanMenu)
+            <div class="pt-5 pb-2 px-3">
+                <span x-show="sidebarOpen || window.innerWidth < 1024" class="text-[10px] font-bold tracking-widest text-gray-400 dark:text-gray-500 uppercase">Layanan Karyawan</span>
+            </div>
+
+            @php
+                // Mengecek langsung ke database apakah nilai toggle KMST bernilai '1'
+                $settingKmst = \App\Models\Setting::where('key', 'kmst_event_active')->first();
+                $isKmstActive = $settingKmst ? ($settingKmst->value === '1') : false;
+            @endphp
+
+            @if($isKmstActive)
+                <a href="{{ route('inovasi.portal') }}" class="relative flex items-center px-3 py-2.5 rounded-xl group transition-all duration-200 {{ request()->routeIs('inovasi.*') ? 'bg-red-50 dark:bg-[#F5333F]/10 text-[#F5333F] font-semibold' : 'text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800/40 hover:text-gray-900 dark:hover:text-white' }}">
+                    <svg class="w-5 h-5 {{ request()->routeIs('inovasi.*') ? 'text-[#F5333F]' : 'text-gray-400 dark:text-gray-500 group-hover:text-gray-900 dark:group-hover:text-white transition-colors' }}" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 18v-5.25m0 0a6.01 6.01 0 001.5-.189m-1.5.189a6.01 6.01 0 01-1.5-.189m3.75 7.478a12.06 12.06 0 01-4.5 0m3.75 2.383a14.406 14.406 0 01-3 0M14.25 18v-.192c0-.983.658-1.823 1.508-2.316a7.5 7.5 0 10-7.516 0c.85.493 1.509 1.333 1.509 2.316V18"></path></svg>
+                    <span x-show="sidebarOpen || window.innerWidth < 1024" class="ml-3 text-[13.5px] font-medium whitespace-nowrap">KMST Inovasi</span>
+                </a>
+            @endif
         @endif
 
 
